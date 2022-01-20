@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Magento2PluginSettings">
+    <option name="pluginEnabled" value="true" />
+    <option name="defaultLicenseName" value="Proprietary" />
+    <option name="magentoPath" value="F:\Visual studio repos\Folkmann Ferenc\zoolox\magento" />
+    <option name="mftfSupportEnabled" value="true" />
+  </component>
+</project>
