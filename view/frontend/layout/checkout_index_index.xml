@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<!--
+  ~ TLSoft
+  ~
+  ~ NOTICE OF LICENSE
+  ~
+  ~ This source file is subject to the TLSoft license that is
+  ~ available through the world-wide-web at this URL:
+  ~ https://tlsoft.hu/license
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to newer
+  ~ version in the future.
+  ~
+  ~ @category    TLSoft
+  ~ @package     TLSoft_BarionGateway
+  ~ @copyright   Copyright (c) TLSoft (https://tlsoft.hu/)
+  ~ @license     https://tlsoft.hu/license
+  -->
+
+<pagepage layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+  <head>
+    <css src="TLSoft_CibGateway::css/source/_style.css"/>
+  </head>
+  <body>
+    <referenceBlock name="checkout.root">
+      <arguments>
+        <argument name="jsLayout" xsi:type="array">
+          <item name="components" xsi:type="array">
+            <item name="checkout" xsi:type="array">
+              <item name="children" xsi:type="array">
+                <item name="steps" xsi:type="array">
+                  <item name="children" xsi:type="array">
+                    <item name="billing-step" xsi:type="array">
+                      <item name="children" xsi:type="array">
+                        <item name="payment" xsi:type="array">
+                          <item name="children" xsi:type="array">
+                            <item name="renders" xsi:type="array">
+                              <item name="children" xsi:type="array">
+                                <item name="cibgateway-cibgateway" xsi:type="array">
+                                  <item name="component" xsi:type="string">TLSoft_CibGateway/js/view/payment/payment</item>
+                                  <item name="methods" xsi:type="array">
+                                    <item name="cibgateway" xsi:type="array">
+                                      <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                    </item>
+                                  </item>
+                                </item>
+                              </item>
+                            </item>
+                          </item>
+                        </item>
+                      </item>
+                    </item>
+                  </item>
+                </item>
+              </item>
+            </item>
+          </item>
+        </argument>
+      </arguments>
+    </referenceBlock>
+  </body>
+</pagepage>

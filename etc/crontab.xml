@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <!--
   ~ TLSoft
   ~
@@ -19,11 +18,10 @@
   ~ @license     https://tlsoft.hu/license
   -->
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TLSoft_BarionGateway" setup_version="0.0.1">
-        <sequence>
-            <module name="TLSoft_PaymentFramework" />
-        </sequence>
-    </module>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+  <group id="tlsoft_payment">
+    <job name="tlsoft_barionprocess" instance="\TLSoft\BarionGateway\Cron\Process" method="execute">
+      <schedule>*/20 * * * *</schedule>
+    </job>
+  </group>
 </config>

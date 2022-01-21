@@ -19,11 +19,8 @@
   ~ @license     https://tlsoft.hu/license
   -->
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TLSoft_BarionGateway" setup_version="0.0.1">
-        <sequence>
-            <module name="TLSoft_PaymentFramework" />
-        </sequence>
-    </module>
-</config>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/error_mapping.xsd">
+    <message_list>
+        <message code="99" translate="true">Partial refund cannot completed yet. Wait for the bank closing hour.</message>
+    </message_list>
+</mapping>

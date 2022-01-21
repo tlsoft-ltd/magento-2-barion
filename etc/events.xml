@@ -19,11 +19,8 @@
   ~ @license     https://tlsoft.hu/license
   -->
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TLSoft_BarionGateway" setup_version="0.0.1">
-        <sequence>
-            <module name="TLSoft_PaymentFramework" />
-        </sequence>
-    </module>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+  <event name="sales_order_place_after">
+    <observer name="save_placed_order_to_registry" instance="TLSoft\CibGateway\Observer\AddOrderIdToSession"/>
+  </event>
 </config>

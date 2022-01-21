@@ -1,0 +1,31 @@
+<!--
+  ~ TLSoft
+  ~
+  ~ NOTICE OF LICENSE
+  ~
+  ~ This source file is subject to the TLSoft license that is
+  ~ available through the world-wide-web at this URL:
+  ~ https://tlsoft.hu/license
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to newer
+  ~ version in the future.
+  ~
+  ~ @category    TLSoft
+  ~ @package     TLSoft_BarionGateway
+  ~ @copyright   Copyright (c) TLSoft (https://tlsoft.hu/)
+  ~ @license     https://tlsoft.hu/license
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/cron_groups.xsd">
+  <group id="tlsoft_payment">
+    <schedule_generate_every>15</schedule_generate_every>
+    <schedule_ahead_for>20</schedule_ahead_for>
+    <schedule_lifetime>15</schedule_lifetime>
+    <history_cleanup_every>600</history_cleanup_every>
+    <history_success_lifetime>600</history_success_lifetime>
+    <history_failure_lifetime>600</history_failure_lifetime>
+    <use_separate_process>1</use_separate_process>
+  </group>
+</config>

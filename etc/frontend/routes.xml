@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!--
   ~ TLSoft
   ~
@@ -19,11 +20,10 @@
   ~ @license     https://tlsoft.hu/license
   -->
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="TLSoft_BarionGateway" setup_version="0.0.1">
-        <sequence>
-            <module name="TLSoft_PaymentFramework" />
-        </sequence>
-    </module>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+  <router id="standard">
+    <route id="bariongateway" frontName="bariongateway">
+      <module name="TLSoft_BarionGateway" />
+    </route>
+  </router>
 </config>
