@@ -1,5 +1,5 @@
 {
-  "name": "tlsoft/magento-2-barion",
+  "name": "tlsoft/barion-gateway",
   "version": "0.0.1",
   "description": "Magento 2 Payment Gateway module for Barion Smart Gateway.",
   "type": "magento2-module",
