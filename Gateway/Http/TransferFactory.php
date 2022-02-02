@@ -59,18 +59,16 @@ class TransferFactory implements TransferFactoryInterface
     {
 		$helper = $this->helper;
 
-		$id = $request['id'];
-
-		unset($request['id']);
-
-		$urlend = $helper->convertMessage($request,$id);
+		$json = $helper->convertMessage($request);
 
 
-		$url = $helper->getMarketUrl()."?".$urlend;
+		$url = $helper->getMarketUrl();
 
         return $this->transferBuilder
-            ->setMethod('POST')
-			->setUri($url)
+            ->setMethod("POST")
+            ->setUri($url)
+            ->setBody($json)
+            ->shouldEncode(true)
             ->build();
     }
 }

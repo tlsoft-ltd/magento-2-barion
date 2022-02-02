@@ -22,7 +22,6 @@
 namespace TLSoft\BarionGateway\Gateway\Response;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Sales\Model\Order;
 use TLSoft\BarionGateway\Helper\Data;
 use Magento\Customer\Model\Session\Storage as Session;
 use Magento\Sales\Model\Order\Payment\Transaction;
@@ -31,7 +30,7 @@ class ResponseHandler implements HandlerInterface
     /**
      * Transaction ID
      */
-    const TXN_ID = "TRID";
+    const TXN_ID = "TransactionId";
 
     /**
      * @var Data
@@ -79,15 +78,13 @@ class ResponseHandler implements HandlerInterface
 
         $result = $helper->getDecodedMessage($response[0]);
 
-        $urlending = $helper->convertMessage($result,20);
-
-        $url = $helper->getCustomerUrl()."?".$urlending;
+        $url = $helper->getCustomerUrl();
 
         $customerSession = $this->customerSession;
         $customerSession->setRedirectUrl($url);
-        $customerSession->setTransactionId($result[self::TXN_ID]);
+        $customerSession->setTransactionId($result["Transactions"][0][self::TXN_ID]);
 
-        $payment->setTransactionId($result[self::TXN_ID]);
+        $payment->setTransactionId($result["Transactions"][0][self::TXN_ID]);
         $payment->setIsTransactionClosed(false);
 
         $order = $payment->getOrder();

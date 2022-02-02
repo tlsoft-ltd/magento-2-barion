@@ -3,7 +3,8 @@
   <component name="Magento2PluginSettings">
     <option name="pluginEnabled" value="true" />
     <option name="defaultLicenseName" value="Proprietary" />
-    <option name="magentoPath" value="F:\Visual studio repos\Folkmann Ferenc\zoolox\magento" />
-    <option name="mftfSupportEnabled" value="true" />
+    <option name="magentoPath" value="F:\Visual studio repos\Körmendi Zoli\Ikiegészítők magento2" />
+    <option name="magentoVersion" value="2.4.2" />
+    <option name="magentoEdition" value="Magento Open Source" />
   </component>
 </project>

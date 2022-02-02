@@ -25,17 +25,11 @@ use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use TLSoft\BarionGateway\Helper\Data;
 class ResponseCodeValidator extends AbstractValidator
 {
-	/**
-	 * Result code;
-	 */
-	const RESULT_CODE = "RC";
-
-	const MSGT = "MSGT";
 
     /**
      * Status;
      */
-    const STATUS = "STATUS";
+    const STATUS = "Status";
 
 	/**
 	 * @var Data
@@ -106,12 +100,8 @@ class ResponseCodeValidator extends AbstractValidator
 
 		$result = $helper->getDecodedMessage($response[0]);
 
-		if(array_key_exists(self::RESULT_CODE,$result)){
-			if($result[self::RESULT_CODE]=="00"){
-				return true;
-			}
-		}else if(array_key_exists(self::STATUS,$result)){
-            if($result[self::STATUS]=="50"||$result[self::STATUS]=="40"){
+		if(array_key_exists(self::STATUS,$result)){
+            if($result[self::STATUS]=="Succeeded"||$result[self::STATUS]=="PartiallySucceeded"||$result[self::STATUS]=="Waiting"){
                 return true;
             }
         }

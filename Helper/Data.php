@@ -28,6 +28,7 @@ use Magento\Framework\Locale\Resolver;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 class Data extends AbstractHelper
 {
@@ -53,6 +54,11 @@ class Data extends AbstractHelper
     private $directoryList;
 
     /**
+     * @var JsonHelper
+     */
+    private $jsonHelper;
+
+    /**
      * __construct
      * @param Context $context
      * @param StoreRepositoryInterface $store
@@ -64,7 +70,8 @@ class Data extends AbstractHelper
         Resolver $localeResolver,
         TimezoneInterface $timezoneFactory,
         UrlInterface $urlInterface,
-        DirectoryList $directoryList
+        DirectoryList $directoryList,
+        JsonHelper $jsonHelper
     )
     {
         parent::__construct($context);
@@ -72,6 +79,7 @@ class Data extends AbstractHelper
         $this->timezoneFactory = $timezoneFactory;
         $this->urlFactory = $urlInterface;
         $this->directoryList = $directoryList;
+        $this->jsonHelper = $jsonHelper;
     }
 
     /**
@@ -109,22 +117,22 @@ class Data extends AbstractHelper
 
         $localecode = $this->localeResolver->getLocale();
 
-        $ciblocale = substr($localecode, 3);
+        $localecode = substr($localecode, 3);
         $enabledlocales = explode(",", $this->getConfig("payment/bariongateway/enabledlocales"));
-        $endciblocale = "";
-        if ($ciblocale == "US" || $ciblocale == "GB") {
-            $ciblocale = "EN";
+        $endlocale = "";
+        if ($localecode == "US" || $localecode == "GB") {
+            $localecode = "EN";
         }
         foreach ($enabledlocales as $enabledlocale) {
-            if ($enabledlocale == $ciblocale) {
-                $endciblocale = $ciblocale;
+            if ($enabledlocale == $localecode) {
+                $endlocale = $localecode;
             }
         }
-        if (empty($endciblocale)) {
-            $endciblocale = "EN";
+        if (empty($endlocale)) {
+            $endlocale = "EN";
         }
 
-        return $endciblocale;
+        return $endlocale;
     }
 
     /**
@@ -165,234 +173,25 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Create CIB message
+     * Create Barion message
      * @param array $message
-     * @param int $id
      * @return string
      */
-    public function convertMessage(array $message, int $id)
+    public function convertMessage(array $message)
     {
-        $text = "";
-        $formattedMsg = array();
-        switch ($id) {
-            case 10:
-                $format = $this->msgt10();
-                $formattedMsg["AUTH"] = 0;
-                break;
-            case 20:
-                $format = $this->msgt20();
-                break;
-            case 32:
-                $format = $this->msgt32();
-                break;
-            case 33:
-                $format = $this->msgt33();
-                break;
-            case 78:
-                $format = $this->msgt78();
-                break;
-            case 74:
-                $format = $this->msgt78();
-                break;
-            case 80:
-                $format = $this->msgt80();
-                break;
-            case 70:
-                $format = $this->msgt70();
-                break;
-            default:
-                break;
-        }
-
-        $formattedMsg = array_merge($formattedMsg, $this->processFormat($format, $message));
-        $formattedMsg["MSGT"] = $id;
-        $formattedMsg["CRYPTO"] = 1;
-
-        $text = http_build_query($formattedMsg, '', '&');
-        $text = $this->getEncodedMessage($text);
+        $text = $this->getEncodedMessage($message);
         return $text;
     }
 
     /**
-     * MSGT 10 coded message
-     * @return array
-     */
-    protected function msgt10()
-    {
-        return array(
-            "pid" => "pid",
-            "uid" => "userid",
-            "amo" => "amount",
-            "cur" => "currency_code",
-            "ts" => "timecode",
-            "lang" => "language_code",
-            "url" => "return_url",
-            "trid" => "transaction_id"
-        );
-    }
-
-    /**
-     * MSGT 10 coded message
-     * @return array
-     */
-    protected function msgt20()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid"
-        );
-    }
-
-    /**
-     * MSGT 32 coded message
-     * @return string[]
-     */
-    protected function msgt32()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid",
-            "amo" => "amount"
-        );
-    }
-
-    /**
-     * MSGT 33 coded message
-     * @return string[]
-     */
-    protected function msgt33()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid",
-            "amo" => "amount"
-        );
-    }
-
-    /**
-     * MSGT 78 coded message
-     * @return string[]
-     */
-    protected function msgt78()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid",
-            "amo" => "amo"
-        );
-    }
-
-    /**
-     * MSGT 80 coded message
-     * @return string[]
-     */
-    protected function msgt80()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid",
-            "amoorig" => "amoorig",
-            "amonew" => "amonew"
-        );
-    }
-
-    /**
-     * MSGT 80 coded message
-     * @return string[]
-     */
-    protected function msgt70()
-    {
-        return array(
-            "pid" => "pid",
-            "trid" => "trid",
-            "amo" => "amo"
-        );
-    }
-
-    /**
-     * Format CIB message array
-     * @param array $format
-     * @param array $message
-     * @return array
-     */
-    protected function processFormat(array $format, array $message)
-    {
-        $returnMessage = array();
-        $message = array_change_key_case($message, CASE_LOWER);
-        foreach ($format as $key => $value) {
-            if (array_key_exists($value, $message)) {
-                $returnMessage[strtoupper($key)] = $message[$value];
-            }
-        }
-
-        return $returnMessage;
-    }
-
-    /**
-     * Return encoded CIB message
-     * @param string $message
+     * Return encoded Barion message
      * @return string
      */
-    public function getEncodedMessage(string $message)
+    public function getEncodedMessage(array $message)
     {
 
-        $path = $this->getConfig("payment/cibgateway/keyfile");
+        return $this->jsonHelper->jsonEncode($message);
 
-        $file = $this->directoryList->getPath("media") . "/keyfile/" . $path;
-
-        $message = $this->encodeMessage($message, $file);
-
-        return $message;
-
-    }
-
-    /**
-     * Encode CIB message
-     * @param string $message
-     * @param string $path
-     * @return string
-     */
-    protected function encodeMessage(string $message, string $path)
-    {
-        $cleartext = $message;
-        $arr = explode("&", $cleartext);
-        $ciphertext = "";
-        $pid = "";
-        // Strip CRYPTO and get PID
-        for ($i = 0; $i < count($arr); $i++) {
-            if (strtoupper($arr[$i]) != "CRYPTO=1")
-                $ciphertext .= "&" . $arr[$i];
-            if (substr(strtoupper($arr[$i]), 0, 4) == "PID=")
-                $pid = substr(strtoupper($arr[$i]), 4, 7);
-        }
-        $ciphertext = substr($ciphertext, 1);
-        // URL encode
-        $ciphertext = rawurlencode($ciphertext);
-        $ciphertext = str_replace("%3D", "=", $ciphertext);
-        $ciphertext = str_replace("%26", "&", $ciphertext);
-        // Calculate and append CRC32
-        $crc = str_pad(dechex(crc32($ciphertext)), 8, "0", STR_PAD_LEFT);
-        for ($i = 0; $i < 4; $i++)
-            $ciphertext .= chr(base_convert(substr($crc, $i * 2, 2), 16, 10));
-        // 3DES
-        $f = fopen($path, "r");
-        $keyinfo = fread($f, 38);
-        fclose($f);
-        $key1 = substr($keyinfo, 14, 8);
-        $key2 = substr($keyinfo, 22, 8);
-        $iv = substr($keyinfo, 30, 8);
-        $key = $key1 . $key2 . $key1;
-        $ciphertext = openssl_encrypt($ciphertext, "DES-EDE3-CBC", $key, OPENSSL_RAW_DATA, $iv);
-        // Pad length to mod3
-        $pad = 3 - (strlen($ciphertext) % 3);
-        for ($i = 0; $i < $pad; $i++)
-            $ciphertext .= chr($pad);
-        // Base64
-        $ciphertext = base64_encode($ciphertext);
-        // URL encode
-        $ciphertext = rawurlencode($ciphertext);
-        $ciphertext = "PID=" . $pid . "&CRYPTO=1&DATA=" . $ciphertext;
-        return $ciphertext;
     }
 
     /**
@@ -403,12 +202,10 @@ class Data extends AbstractHelper
     {
         $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
-        $url = false;
-
         if ($test_mode == 1) {
-            $url = $this->getConfig("payment/cibgateway/market_test_url");
+            $url = $this->getConfig("payment/bariongateway/start_url_test");
         } else {
-            $url = $this->getConfig("payment/cibgateway/market_url");
+            $url = $this->getConfig("payment/bariongateway/start_url");
         }
 
         if (empty($url)) {
@@ -418,19 +215,19 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Get CIB Customer redirect url
+     * Get Barion redirect url
      * @return boolean|string
      */
     public function getCustomerUrl()
     {
-        $test_mode = $this->getConfig("payment/cibgateway/test_mode");
+        $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
         $url = false;
 
         if ($test_mode == 1) {
-            $url = $this->getConfig("payment/cibgateway/customer_test_url");
+            $url = $this->getConfig("payment/bariongateway/redirect_url_test");
         } else {
-            $url = $this->getConfig("payment/cibgateway/customer_url");
+            $url = $this->getConfig("payment/bariongateway/redirect_url");
         }
 
         if (empty($url)) {
@@ -440,114 +237,16 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Return decoded CIB message
+     * Return decoded Barion message
      * @param string $message
      * @return array
      */
     public function getDecodedMessage(string $message)
     {
-        $result = array();
-
-        if (strpos($message, "RC=") !== FALSE && strpos($message, "CIB E-commerce hiba") === FALSE) {
-            $result = array();
-            $result["RC"] = str_replace("RC=", "", $message);
-            return $result;
-        } else if (strpos($message, "CIB E-commerce hiba") !== FALSE) {
-            $result['RC'] = false;
-            return $result;
-        }
-
-        $path = $this->getConfig("payment/cibgateway/keyfile");
-
-        $file = $this->directoryList->getPath("media") . "/keyfile/" . $path;
-
-        if ($message == "RC=S05") {
-            return $result;
-        }
-        $message = $this->decodeMessage($message, $file);
-
-        $result = $this->splitResult($message);
-
-        if (array_key_exists('RT', $result)) {
-            $result['RT'] = iconv('ISO8859-2', 'UTF-8', urldecode($result['RT']));
-        }
+        $result = $this->jsonHelper->jsonDecode($message);
 
         return $result;
 
-    }
-
-    /**
-     * Decode CIB message
-     * @param string $message
-     * @param string $path
-     * @return string
-     */
-    protected function decodeMessage(string $message, string $path)
-    {
-        $arr = explode("&", $message);
-        if (!is_array($arr))
-            return false;
-        $cleartext = "";
-        $pid = "";
-        // Get PID and DATA values
-        for ($i = 0; $i < count($arr); $i++) {
-            if (substr(strtoupper($arr[$i]), 0, 5) == "DATA=")
-                $cleartext = substr($arr[$i], 5);
-            if (substr(strtoupper($arr[$i]), 0, 4) == "PID=")
-                $pid = substr(strtoupper($arr[$i]), 4, 7);
-        }
-        // Url decoding
-        $cleartext = rawurldecode($cleartext);
-        // Base64
-        $cleartext = base64_decode($cleartext);
-        $lastc = ord($cleartext[strlen($cleartext) - 1]);
-        // Unpad
-        $validpad = 1;
-        for ($i = 0; $i < $lastc; $i++)
-            if (ord(substr($cleartext, strlen($cleartext) - 1 - $i, 1)) != $lastc)
-                $validpad = 0;
-        if ($validpad == 1)
-            $cleartext = substr($cleartext, 0, strlen($cleartext) - $lastc);
-        // 3DES
-        $f = fopen($path, "r");
-        $keyinfo = fread($f, 38);
-        fclose($f);
-        $key1 = substr($keyinfo, 14, 8);
-        $key2 = substr($keyinfo, 22, 8);
-        $iv = substr($keyinfo, 30, 8);
-        $key = $key1 . $key2 . $key1;
-        $cleartext = openssl_decrypt($cleartext, "DES-EDE3-CBC", $key, OPENSSL_RAW_DATA, $iv);
-        // CRC32 check
-        $crc = substr($cleartext, strlen($cleartext) - 4);
-        $crch = "";
-        for ($i = 0; $i < 4; $i++)
-            $crch .= str_pad(dechex(ord($crc[$i])), 2, "0", STR_PAD_LEFT);
-        $cleartext = substr($cleartext, 0, strlen($cleartext) - 4);
-        $crc = str_pad(dechex(crc32($cleartext)), 8, "0", STR_PAD_LEFT);
-        if ($crch != $crc)
-            return "";
-        // URL decoding
-        $cleartext = str_replace("&", "%26", $cleartext);
-        $cleartext = str_replace("=", "%3D", $cleartext);
-        $cleartext = rawurldecode($cleartext);
-        return $cleartext;
-    }
-
-    /**
-     * Split CIB response
-     * @param string $result
-     * @return array
-     */
-    public function splitResult(string $result)
-    {
-        $returnarray = array();
-        $resultarrays = explode('&', $result);
-        foreach ($resultarrays as $resultarray) {
-            $split = explode('=', $resultarray);
-            $returnarray[$split[0]] = $split[1];
-        }
-
-        return $returnarray;
     }
 
 

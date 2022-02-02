@@ -80,7 +80,7 @@
             <argument name="handler" xsi:type="object">BarionGatewayStartupHandler</argument>
             <argument name="transferFactory" xsi:type="object">TLSoft\BarionGateway\Gateway\Http\TransferFactory</argument>
             <argument name="validator" xsi:type="object">TLSoft\BarionGateway\Gateway\Validator\ResponseCodeValidator</argument>
-            <argument name="client" xsi:type="object">Magento\Payment\Gateway\Http\Client\Zend</argument>
+            <argument name="client" xsi:type="object">TLSoft\BarionGateway\Gateway\Http\Client\Zend</argument>
         </arguments>
     </virtualType>
 
