@@ -129,8 +129,8 @@ class InitializeRequest implements BuilderInterface
             "Country" => $shippingAddress->getCountryId(),
             "City" => $shippingAddress->getCity(),
             "Zip" => $shippingAddress->getPostcode(),
-            "Street" => implode(" ",$shippingAddress->getStreetLine1()),
-            "Street2" => implode(" ",$shippingAddress->getStreetLine2()),
+            "Street" => $shippingAddress->getStreetLine1(),
+            "Street2" => $shippingAddress->getStreetLine2(),
             "FullName" => $shippingAddress->getFirstname()." ".$shippingAddress->getLastname()
         ]];
 
@@ -141,8 +141,8 @@ class InitializeRequest implements BuilderInterface
             "Country" => $billingAddress->getCountryId(),
             "City" => $billingAddress->getCity(),
             "Zip" => $billingAddress->getPostcode(),
-            "Street" => implode(" ",$billingAddress->getStreetLine1()),
-            "Street2" => implode(" ",$billingAddress->getStreetLine2()),
+            "Street" => $billingAddress->getStreetLine1(),
+            "Street2" => $billingAddress->getStreetLine2(),
             "FullName" => $billingAddress->getFirstname()." ".$billingAddress->getLastname()
         ]];
 
