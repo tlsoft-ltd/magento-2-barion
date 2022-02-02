@@ -40,6 +40,11 @@ class InitializeRequest implements BuilderInterface
      */
     private $configProvider;
 
+    /**
+     * @var OrderRepositoryInterface
+     */
+    private $orderRepository;
+
     public function __construct(
         ConfigProvider $config,
         Data           $helper
@@ -86,8 +91,12 @@ class InitializeRequest implements BuilderInterface
         $message["GuestCheckout"] = true; //Flag indicating whether the payment can be completed without a registered Barion wallet.
         $message["FundingSources"] = ["All"]; //Payment can be completed with all funding sources. Equivalent to ["Balance", "Card", "GooglePay", "ApplePay"]
         $message["PaymentRequestId"] = $order->getOrderIncrementId();
-        $message["PayerHint"] = $order->getCustomerEmail();
-        $message["CardHolderNameHint"] = $order->getCustomerName();
+
+        $shippingAddress = $order->getShippingAddress();
+        $billingAddress = $order->getBillingAddress();
+
+        $message["PayerHint"] = $billingAddress->getEmail();
+        $message["CardHolderNameHint"] = $billingAddress->getFirstname()." ".$billingAddress->getLastname();
 
         $message["RedirectUrl"] = $helper->getUrl("bariongateway/payment/response");
         $message["CallbackUrl"] = $helper->getUrl("bariongateway/payment/ipn");
@@ -115,7 +124,7 @@ class InitializeRequest implements BuilderInterface
 
         $message["OrderNumber"]=$order->getOrderIncrementId();
 
-        $shippingAddress = $order->getShippingAddress();
+
         $message["ShippingAddress"] = [[
             "Country" => $shippingAddress->getCountryId(),
             "City" => $shippingAddress->getCity(),
@@ -127,7 +136,6 @@ class InitializeRequest implements BuilderInterface
         $message["Locale"] = $helper->getLocaleCode($storeId);
         $message["Currency"] = $order->getCurrencyCode();
 
-        $billingAddress = $order->getBillingAddress();
         $message["BillingAddress"] = [[
             "Country" => $billingAddress->getCountryId(),
             "City" => $billingAddress->getCity(),
