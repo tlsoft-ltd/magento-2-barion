@@ -116,7 +116,7 @@
   <virtualType name="BarionGatewayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
     <arguments>
       <argument name="validators" xsi:type="array">
-        <item name="country" xsi:type="string">BarionGatewayGatewayCountryValidator</item>
+        <item name="country" xsi:type="string">BarionGatewayCountryValidator</item>
         <item name="currency" xsi:type="string">TLSoft\BarionGateway\Gateway\Validator\CurrencyValidator</item>
       </argument>
     </arguments>
