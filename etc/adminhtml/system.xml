@@ -28,61 +28,54 @@
                 <group id="credentials" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Credentials</label>
-                    <field id="keyfile" translate="label comment" type="file" sortOrder="50" showInDefault="1"
-                           showInWebsite="1" showInStore="1">
-                        <label>Upload Keyfile</label>
-                        <config_path>payment/cibgateway/keyfile</config_path>
-                        <backend_model>TLSoft\CibGateway\Model\Config\Backend\Keyfile</backend_model>
-                        <base_url type="media" scope_info="1">keyfile</base_url>
-                    </field>
-                    <field id="pid_huf" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1"
+                    <field id="poskey" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                            showInStore="1">
-                        <label>Shop ID HUF</label>
-                        <config_path>payment/cibgateway/pid_huf</config_path>
+                        <label>POSKey</label>
+                        <config_path>payment/bariongateway/poskey</config_path>
                     </field>
-                    <field id="pid_eur" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1"
+                    <field id="email" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
                            showInStore="1">
-                        <label>Shop ID EUR</label>
-                        <config_path>payment/cibgateway/pid_eur</config_path>
+                        <label>Email</label>
+                        <config_path>payment/bariongateway/email</config_path>
                     </field>
                 </group>
-                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
+                <field id="active" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
+                <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Title</label>
                 </field>
-                <field id="test_mode" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1"
+                <field id="test_mode" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Test Mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="sort_order" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1"
+                <field id="sort_order" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
-                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="90" showInDefault="1"
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="60" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Payment from Applicable Countries</label>
                     <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
                 </field>
-                <field id="specificcountry" translate="label" type="multiselect" sortOrder="100" showInDefault="1"
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="70" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Payment from Specific Countries</label>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
-                <field id="log" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="0"
+                <field id="log" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="0"
                        showInStore="0">
                     <label>Enable Logging</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="debug" type="select" translate="label" showInDefault="1" showInWebsite="0" showInStore="0"
-                       sortOrder="120">
+                       sortOrder="90">
                     <label>Debug mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>

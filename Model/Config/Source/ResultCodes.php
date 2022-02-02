@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Model\Config\Source;
+namespace TLSoft\BarionGateway\Model\Config\Source;
 
 class ResultCodes
 {

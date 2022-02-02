@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Helper;
+namespace TLSoft\BarionGateway\Gateway\Helper;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Api\Filter;
@@ -37,9 +37,9 @@ use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Service\InvoiceService;
-use TLSoft\CibGateway\Helper\Data;
-use TLSoft\CibGateway\Model\Config\Source\ResultCodes;
-use TLSoft\CibGateway\Model\Ui\ConfigProvider;
+use TLSoft\BarionGateway\Helper\Data;
+use TLSoft\BarionGateway\Model\Config\Source\ResultCodes;
+use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
 
 class Communication extends AbstractHelper
 {
@@ -125,14 +125,14 @@ class Communication extends AbstractHelper
             $orderManagement->cancel($order->getId());
 
             $status = $orderManagement->getStatus($order->getId());
-            $order->addCommentToStatusHistory(__('Closed by CIB module.') . ' ' . __('Closed by cron.'), $status);
+            $order->addCommentToStatusHistory(__('Closed by Barion module.') . ' ' . __('Closed by cron.'), $status);
 
             return;
 
         }
 
         $helper = $this->helper;
-        $methodCode = "cibgateway";
+        $methodCode = "bariongateway";
 
         $transaction_id = $params["TRID"];
 

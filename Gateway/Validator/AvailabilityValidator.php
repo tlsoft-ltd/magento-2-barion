@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Validator;
+namespace TLSoft\BarionGateway\Gateway\Validator;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
@@ -28,7 +28,7 @@ use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use TLSoft\CibGateway\Helper\Data;
+use TLSoft\BarionGateway\Helper\Data;
 class AvailabilityValidator extends AbstractValidator
 {
 	protected $_dataHelper;
@@ -53,8 +53,6 @@ class AvailabilityValidator extends AbstractValidator
 
     public function validate(array $validationSubject)
     {
-		$merchant_key_huf = $this->config->getValue('payment/cibgateway/pid_huf');
-		$merchant_key_eur = $this->config->getValue('payment/cibgateway/pid_eur');
 
 		return $this->createResult(
                 true,

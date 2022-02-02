@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Helper;
+namespace TLSoft\BarionGateway\Helper;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -81,7 +81,7 @@ class Data extends AbstractHelper
      */
     public function getAllowedCurrencyCodes()
     {
-        return explode(",", $this->getConfig("payment/cibgateway/allowedcurrency"));
+        return explode(",", $this->getConfig("payment/bariongateway/allowedcurrency"));
     }
 
     /**
@@ -100,7 +100,7 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Transform internal locale code to CIB locale code.
+     * Transform internal locale code to Barion locale code.
      * @param int $storeId
      * @return string
      */
@@ -110,7 +110,7 @@ class Data extends AbstractHelper
         $localecode = $this->localeResolver->getLocale();
 
         $ciblocale = substr($localecode, 3);
-        $enabledlocales = explode(",", $this->getConfig("payment/cibgateway/enabledlocales"));
+        $enabledlocales = explode(",", $this->getConfig("payment/bariongateway/enabledlocales"));
         $endciblocale = "";
         if ($ciblocale == "US" || $ciblocale == "GB") {
             $ciblocale = "EN";
@@ -128,7 +128,7 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Get current timecode for CIB transactions
+     * Get current timecode for Barion transactions
      * @return string
      */
     public function getTimeCode()
@@ -137,7 +137,7 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Format order total to CIB's requirements.
+     * Format order total to Barion's requirements.
      * @param number $total
      * @param string $currency
      * @return string
@@ -396,12 +396,12 @@ class Data extends AbstractHelper
     }
 
     /**
-     * Get CIB Market url
+     * Get Barion url
      * @return boolean|string
      */
     public function getMarketUrl()
     {
-        $test_mode = $this->getConfig("payment/cibgateway/test_mode");
+        $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
         $url = false;
 

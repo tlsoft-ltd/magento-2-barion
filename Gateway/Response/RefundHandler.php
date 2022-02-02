@@ -18,12 +18,12 @@
  * @copyright   Copyright (c) TLSoft (https://tlsoft.hu/)
  * @license     https://tlsoft.hu/license
  */
-namespace TLSoft\CibGateway\Gateway\Response;
+namespace TLSoft\BarionGateway\Gateway\Response;
 
 use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use TLSoft\CibGateway\Helper\Data;
+use TLSoft\BarionGateway\Helper\Data;
 
 class RefundHandler implements HandlerInterface
 {

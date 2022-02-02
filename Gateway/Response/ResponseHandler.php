@@ -19,11 +19,11 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Response;
+namespace TLSoft\BarionGateway\Gateway\Response;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order;
-use TLSoft\CibGateway\Helper\Data;
+use TLSoft\BarionGateway\Helper\Data;
 use Magento\Customer\Model\Session\Storage as Session;
 use Magento\Sales\Model\Order\Payment\Transaction;
 class ResponseHandler implements HandlerInterface

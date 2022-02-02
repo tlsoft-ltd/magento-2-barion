@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+  ~ TLSoft
+  ~
+  ~ NOTICE OF LICENSE
+  ~
+  ~ This source file is subject to the TLSoft license that is
+  ~ available through the world-wide-web at this URL:
+  ~ https://tlsoft.hu/license
+  ~
+  ~ DISCLAIMER
+  ~
+  ~ Do not edit or add to this file if you wish to upgrade this extension to newer
+  ~ version in the future.
+  ~
+  ~ @category    TLSoft
+  ~ @package     TLSoft_BarionGateway
+  ~ @copyright   Copyright (c) TLSoft (https://tlsoft.hu/)
+  ~ @license     https://tlsoft.hu/license
+  -->
+
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/error_mapping.xsd">
+    <message_list>
+        <message code="10" translate="true">The payment is prepared. This means it can be completed unless the payment time window expires.</message>
+        <message code="20" translate="true">The payment process has been started. This means the payer started the execution of the payment with a funding source.</message>
+        <message code="21" translate="true">The payment process is currently in progress. This means that the communication between Barion and the bank card processing system is currently taking place. No alterations can be made to the payment in this status.</message>
+        <message code="22" translate="true">The payment was paid with bank transfer and the result of the bank transfer is not known yet. Used in Payment_Buttons scenarios.</message>
+        <message code="25" translate="true">The payment was completed by the payer, but the amount is still reserved. This means that the payment should be finished (finalized) unless the reservation period expires.</message>
+        <message code="26" translate="true">	The payment was completed by the payer, but the amount is not charged yet on the bankcard. The payment must be finished before the authorization period expires.</message>
+        <message code="30" translate="true">The payment has been explicitly cancelled (rejected) by the payer. This is a final status, the payment can no longer be completed.</message>
+        <message code="40" translate="true">The payment has been fully completed. This is a final status, the payment can no longer be altered.</message>
+        <message code="50" translate="true">The payment has failed because of unknown reasons. Used in payment scenarios that were paid with bank transfer.</message>
+        <message code="60" translate="true">This can occur if a complex reservation payment contains multiple transactions, and only some of them are finished. If all transactions are finished, the payment status will change to Succeeded.</message>
+        <message code="70" translate="true">	The payment was expired. This can occur due to numerous reasons:
+            The payment time window has passed and the payer did not complete the payment. A reserved payment was not finished during the reservation period. In this case, the money is refunded to the payer. This is a final status, the payment can no longer be completed.</message>
+    </message_list>
+</mapping>

@@ -23,7 +23,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
   <default>
     <payment>
-      <cibgateway>
+      <bariongateway>
         <active>0</active>
         <title>Barion Smart Gateway payment</title>
         <test_mode>1</test_mode>
@@ -34,7 +34,7 @@
         <log>0</log>
         <debug>0</debug>
         <group>online</group>
-        <model>BarionGatewayGatewayAdapter</model>
+        <model>BarionGatewayAdapter</model>
         <can_authorize>1</can_authorize>
         <can_capture>1</can_capture>
         <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
@@ -45,13 +45,15 @@
         <can_initialize>1</can_initialize>
         <can_use_internal>0</can_use_internal>
         <can_use_for_multishipping>0</can_use_for_multishipping>
-        <enabledlocales>HU,EN,DE,IT,FR,PL,PT,CZ,ES,RO,SK</enabledlocales>
-        <allowedcurrency>HUF,EUR</allowedcurrency>
-        <market_url><![CDATA[http://eki.cib.hu:8090/market.saki/]]></market_url>
-        <market_test_url><![CDATA[http://ekit.cib.hu:8090/market.saki/]]></market_test_url>
-        <customer_url><![CDATA[https://eki.cib.hu/customer.saki]]></customer_url>
-        <customer_test_url><![CDATA[https://ekit.cib.hu/customer.saki]]></customer_test_url>
-      </cibgateway>
+        <enabledlocales>HU,EN,DE,SI,ES,FR,RO,SK,CZ,SL</enabledlocales>
+        <allowedcurrency>HUF,EUR,USD,CZK</allowedcurrency>
+        <start_url><![CDATA[https://api.barion.com/v2/Payment/Start]]></start_url>
+        <start_url_test><![CDATA[https://api.test.barion.com/v2/Payment/Start]]></start_url_test>
+        <redirect_url><![CDATA[https://secure.barion.com/Pay]]></redirect_url>
+        <redirect_url_test><![CDATA[https://test.barion.com/Pay]]></redirect_url_test>
+        <state_url><![CDATA[https://api.barion.com/v2/Payment/GetPaymentState]]></state_url>
+        <state_url_test><![CDATA[https://api.test.barion.com/v2/Payment/GetPaymentState]]></state_url_test>
+      </bariongateway>
     </payment>
   </default>
 </config>

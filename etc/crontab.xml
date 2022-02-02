@@ -21,7 +21,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
   <group id="tlsoft_payment">
     <job name="tlsoft_barionprocess" instance="\TLSoft\BarionGateway\Cron\Process" method="execute">
-      <schedule>*/20 * * * *</schedule>
+      <schedule>*/10 * * * *</schedule>
     </job>
   </group>
 </config>

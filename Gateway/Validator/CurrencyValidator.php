@@ -18,10 +18,10 @@
  * @copyright   Copyright (c) TLSoft (https://tlsoft.hu/)
  * @license     https://tlsoft.hu/license
  */
-namespace TLSoft\CibGateway\Gateway\Validator;
+namespace TLSoft\BarionGateway\Gateway\Validator;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
-use TLSoft\CibGateway\Helper\Data;
+use TLSoft\BarionGateway\Helper\Data;
 class CurrencyValidator extends AbstractValidator
 {
 	/**

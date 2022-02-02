@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Command;
+namespace TLSoft\BarionGateway\Gateway\Command;
 
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;

@@ -20,126 +20,126 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
   <!-- Payment Method Facade configuration -->
-  <virtualType name="CibGatewayGatewayAdapter" type="Magento\Payment\Model\Method\Adapter">
+  <virtualType name="BarionGatewayAdapter" type="Magento\Payment\Model\Method\Adapter">
     <arguments>
-      <argument name="valueHandlerPool" xsi:type="object">CibGatewayGatewayValueHandlerPool</argument>
-      <argument name="code" xsi:type="const">TLSoft\CibGateway\Model\Ui\ConfigProvider::CODE</argument>
+      <argument name="valueHandlerPool" xsi:type="object">BarionGatewayValueHandlerPool</argument>
+      <argument name="code" xsi:type="const">TLSoft\BarionGateway\Model\Ui\ConfigProvider::CODE</argument>
       <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
       <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
-      <argument name="commandPool" xsi:type="object">CibGatewayGatewayCommandPool</argument>
-      <argument name="validatorPool" xsi:type="object">CibGatewayGatewayValidatorPool</argument>
+      <argument name="commandPool" xsi:type="object">BarionGatewayCommandPool</argument>
+      <argument name="validatorPool" xsi:type="object">BarionGatewayValidatorPool</argument>
     </arguments>
   </virtualType>
 
     <!-- Amazon error code mapper -->
-    <virtualType name="TLSoft\CibGateway\Gateway\ErrorMapper\VirtualConfigReader" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
+    <virtualType name="TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualConfigReader" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
         <arguments>
-            <argument name="fileName" xsi:type="string">tlsoft_cibgateway_error_mapping.xml</argument>
+            <argument name="fileName" xsi:type="string">tlsoft_bariongateway_error_mapping.xml</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TLSoft\CibGateway\Gateway\ErrorMapper\VirtualMappingData" type="Magento\Payment\Gateway\ErrorMapper\MappingData">
+    <virtualType name="TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualMappingData" type="Magento\Payment\Gateway\ErrorMapper\MappingData">
         <arguments>
-            <argument name="reader" xsi:type="object">TLSoft\CibGateway\Gateway\ErrorMapper\VirtualConfigReader</argument>
-            <argument name="cacheId" xsi:type="string">tlsoft_cibgateway_error_mapper</argument>
+            <argument name="reader" xsi:type="object">TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualConfigReader</argument>
+            <argument name="cacheId" xsi:type="string">tlsoft_bariongateway_error_mapper</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TLSoft\CibGateway\Gateway\ErrorMapper\VirtualErrorMessageMapper" type="Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapper">
+    <virtualType name="TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualErrorMessageMapper" type="Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapper">
         <arguments>
-            <argument name="messageMapping" xsi:type="object">TLSoft\CibGateway\Gateway\ErrorMapper\VirtualMappingData</argument>
+            <argument name="messageMapping" xsi:type="object">TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualMappingData</argument>
         </arguments>
     </virtualType>
   
    <!-- Configuration reader -->
-    <virtualType name="CibGatewayGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+    <virtualType name="BarionGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">TLSoft\CibGateway\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">TLSoft\BarionGateway\Model\Ui\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="CibGatewayGatewayLogger" type="Magento\Payment\Model\Method\Logger">
+    <virtualType name="BarionGatewayLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
-            <argument name="config" xsi:type="object">CibGatewayGatewayConfig</argument>
+            <argument name="config" xsi:type="object">BarionGatewayConfig</argument>
         </arguments>
     </virtualType>
   
   <!-- Commands infrastructure -->
-    <virtualType name="CibGatewayGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+    <virtualType name="BarionGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="initialize" xsi:type="string">CibGatewayGatewayInitializeCommand</item>
-                <item name="capture" xsi:type="string">CibGatewayGatewayCaptureCommand</item>
-                <item name="refund" xsi:type="string">CibGatewayGatewayRefundCommand</item>
+                <item name="initialize" xsi:type="string">BarionGatewayInitializeCommand</item>
+                <item name="capture" xsi:type="string">BarionGatewayCaptureCommand</item>
+                <item name="refund" xsi:type="string">BarionGatewayRefundCommand</item>
             </argument>
         </arguments>
     </virtualType>
   
      <!-- Capture command -->
-    <virtualType name="CibGatewayGatewayInitializeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+    <virtualType name="BarionGatewayInitializeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TLSoft\CibGateway\Gateway\Request\InitializeRequest</argument>
-            <argument name="handler" xsi:type="object">CibGatewayStartupHandler</argument>
-            <argument name="transferFactory" xsi:type="object">TLSoft\CibGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">TLSoft\CibGateway\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">TLSoft\BarionGateway\Gateway\Request\InitializeRequest</argument>
+            <argument name="handler" xsi:type="object">BarionGatewayStartupHandler</argument>
+            <argument name="transferFactory" xsi:type="object">TLSoft\BarionGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">TLSoft\BarionGateway\Gateway\Validator\ResponseCodeValidator</argument>
             <argument name="client" xsi:type="object">Magento\Payment\Gateway\Http\Client\Zend</argument>
         </arguments>
     </virtualType>
 
     <!-- Handler -->
-    <virtualType name="CibGatewayStartupHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+    <virtualType name="BarionGatewayStartupHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="transaction_id" xsi:type="string">TLSoft\CibGateway\Gateway\Response\ResponseHandler</item>
+                <item name="transaction_id" xsi:type="string">TLSoft\BarionGateway\Gateway\Response\ResponseHandler</item>
             </argument>
         </arguments>
     </virtualType>
 
     <!-- Refund command -->
-    <virtualType name="CibGatewayGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+    <virtualType name="BarionGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TLSoft\CibGateway\Gateway\Request\RefundRequest</argument>
-            <argument name="handler" xsi:type="object">TLSoft\CibGateway\Gateway\Response\RefundHandler</argument>
-            <argument name="transferFactory" xsi:type="object">TLSoft\CibGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">TLSoft\CibGateway\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">TLSoft\BarionGateway\Gateway\Request\RefundRequest</argument>
+            <argument name="handler" xsi:type="object">TLSoft\BarionGateway\Gateway\Response\RefundHandler</argument>
+            <argument name="transferFactory" xsi:type="object">TLSoft\BarionGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">TLSoft\BarionGateway\Gateway\Validator\ResponseCodeValidator</argument>
             <argument name="client" xsi:type="object">Magento\Payment\Gateway\Http\Client\Zend</argument>
-            <argument name="errorMessageMapper" xsi:type="object">TLSoft\CibGateway\Gateway\ErrorMapper\VirtualErrorMessageMapper</argument>
+            <argument name="errorMessageMapper" xsi:type="object">TLSoft\BarionGateway\Gateway\ErrorMapper\VirtualErrorMessageMapper</argument>
         </arguments>
     </virtualType>
 
     <!-- Capture command -->
-    <virtualType name="CibGatewayGatewayCaptureCommand" type="TLSoft\CibGateway\Gateway\Command\CaptureCommand">
+    <virtualType name="BarionGatewayCaptureCommand" type="TLSoft\BarionGateway\Gateway\Command\CaptureCommand">
         <arguments>
-            <argument name="commandPool" xsi:type="object">CibGatewayGatewayCommandPool</argument>
+            <argument name="commandPool" xsi:type="object">BarionGatewayCommandPool</argument>
         </arguments>
     </virtualType>
   
   <!-- Payment validators configuration -->
-  <virtualType name="CibGatewayGatewayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+  <virtualType name="BarionGatewayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
     <arguments>
       <argument name="validators" xsi:type="array">
-        <item name="country" xsi:type="string">CibGatewayGatewayCountryValidator</item>
-        <item name="currency" xsi:type="string">TLSoft\CibGateway\Gateway\Validator\CurrencyValidator</item>
+        <item name="country" xsi:type="string">BarionGatewayGatewayCountryValidator</item>
+        <item name="currency" xsi:type="string">TLSoft\BarionGateway\Gateway\Validator\CurrencyValidator</item>
       </argument>
     </arguments>
   </virtualType>
   
-  <!-- Country valdiator -->
-  <virtualType name="CibGatewayGatewayCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+  <!-- Country validator -->
+  <virtualType name="BarionGatewayCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
     <arguments>
-        <argument name="config" xsi:type="object">CibGatewayGatewayConfig</argument>
+        <argument name="config" xsi:type="object">BarionGatewayConfig</argument>
     </arguments>
   </virtualType>
   
  <!-- Value handlers infrastructure -->
-    <virtualType name="CibGatewayGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+    <virtualType name="BarionGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="default" xsi:type="string">CibGatewayGatewayConfigValueHandler</item>
+                <item name="default" xsi:type="string">BarionGatewayConfigValueHandler</item>
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="CibGatewayGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+    <virtualType name="BarionGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
-            <argument name="configInterface" xsi:type="object">CibGatewayGatewayConfig</argument>
+            <argument name="configInterface" xsi:type="object">BarionGatewayConfig</argument>
         </arguments>
     </virtualType>
 </config>

@@ -31,8 +31,8 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'cibgateway',
-                component: 'TLSoft_CibGateway/js/view/payment/method-renderer/payment-method'
+                type: 'bariongateway',
+                component: 'TLSoft_BarionGateway/js/view/payment/method-renderer/payment-method'
             }
         );
         /** Add view logic here if needed */

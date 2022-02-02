@@ -19,11 +19,11 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Http;
+namespace TLSoft\BarionGateway\Gateway\Http;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
-use TLSoft\CibGateway\Helper\Data;
+use TLSoft\BarionGateway\Helper\Data;
 
 class TransferFactory implements TransferFactoryInterface
 {

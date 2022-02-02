@@ -19,11 +19,11 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Gateway\Request;
+namespace TLSoft\BarionGateway\Gateway\Request;
 
-use TLSoft\CibGateway\Helper\Data;
-use TLSoft\CibGateway\Model\Ui\ConfigProvider;
-use TLSoft\CibGateway\Gateway\Helper\Communication;
+use TLSoft\BarionGateway\Helper\Data;
+use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
+use TLSoft\BarionGateway\Gateway\Helper\Communication;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;

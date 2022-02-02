@@ -19,7 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 
-namespace TLSoft\CibGateway\Model\Ui;
+namespace TLSoft\BarionGateway\Model\Ui;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 /**
@@ -27,7 +27,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
  */
 final class ConfigProvider implements ConfigProviderInterface
 {
-    const CODE = 'cibgateway';
+    const CODE = 'bariongateway';
 
 	/**
 	 * @var ScopeConfigInterface
@@ -69,7 +69,6 @@ final class ConfigProvider implements ConfigProviderInterface
 
         foreach ($config['payment'][self::CODE]['providers'] as $providerConfig) {
             if ($providerConfig['name'] === $code) {
-                //return array_merge($this->getCommonConfig(), $providerConfig);
 				return $providerConfig;
             }
         }

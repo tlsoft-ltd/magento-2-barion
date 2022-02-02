@@ -29,21 +29,21 @@ define(
 
         return Component.extend({
             defaults: {
-                template: 'TLSoft_CibGateway/payment/form',
+                template: 'TLSoft_BarionGateway/payment/form',
                 redirectAfterPlaceOrder: false
             },
 
             getCode: function () {
-                return 'cibgateway';
+                return 'bariongateway';
             },
 
             /** Returns payment cib logo path */
             getLogoSrc: function () {
-                return require.toUrl('TLSoft_CibGateway/images/logo.jpg');
+                return require.toUrl('TLSoft_BarionGateway/images/logo.png');
             },
 
             afterPlaceOrder: function () {
-                window.location.replace(url.build('cibgateway/payment/index'));
+                window.location.replace(url.build('bariongateway/payment/index'));
             }
         });
     }
