@@ -62,9 +62,6 @@ class InitializeRequest implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export('itt',true));
         if (!isset($buildSubject['payment'])
             || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
@@ -151,10 +148,6 @@ class InitializeRequest implements BuilderInterface
 
         $message["PayerAccountInformation"] = ["SuspiciousActivityIndicator" => "NoSuspiciousActivityObserved"];
         $message["ChallengePreference"] = "NoPreference";
-
-        $logger->debug(var_export($message,true));
-        $logger->debug(var_export($helper->convertMessage($message),true));
-        $logger->debug(var_export($helper->getDecodedMessage($helper->convertMessage($message)),true));
 
         return $message;
     }
