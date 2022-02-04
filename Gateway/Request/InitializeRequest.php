@@ -62,6 +62,9 @@ class InitializeRequest implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export('itt',true));
         if (!isset($buildSubject['payment'])
             || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
