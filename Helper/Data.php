@@ -123,13 +123,20 @@ class Data extends AbstractHelper
         if ($localecode == "US" || $localecode == "GB") {
             $localecode = "EN";
         }
-        foreach ($enabledlocales as $enabledlocale) {
-            if ($enabledlocale == $localecode) {
-                $endlocale = $localecode;
+        foreach ($enabledlocales as $enabledlocale){
+            if ($enabledlocale == $localecode){
+                $endlocale=$localecode;
             }
         }
-        if (empty($endlocale)) {
+        if (empty($endlocale)){
             $endlocale = "EN";
+        }
+
+        if($endlocale=="EN")
+        {
+            $endlocale = "en-US";
+        }else{
+            $endlocale = strtolower($endlocale)."-".$endlocale;
         }
 
         return $endlocale;
