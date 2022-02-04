@@ -106,10 +106,6 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
         try {
             $response = $client->request();
 
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $logger = $objectManager->get('Psr\Log\LoggerInterface');
-            $logger->debug(var_export($response,true));
-
             $result = $this->converter
                 ? $this->converter->convert($response->getBody())
                 : [$response->getBody()];

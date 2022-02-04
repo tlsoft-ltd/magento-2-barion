@@ -100,6 +100,10 @@ class ResponseCodeValidator extends AbstractValidator
 
 		$result = $helper->getDecodedMessage($response[0]);
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($result,true));
+
 		if(array_key_exists(self::STATUS,$result)){
             if($result[self::STATUS]=="Succeeded"||$result[self::STATUS]=="PartiallySucceeded"||$result[self::STATUS]=="Waiting"){
                 return true;
