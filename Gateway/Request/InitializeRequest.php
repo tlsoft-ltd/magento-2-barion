@@ -154,7 +154,7 @@ class InitializeRequest implements BuilderInterface
 
         $logger->debug(var_export($message,true));
         $logger->debug(var_export($helper->convertMessage($message),true));
-        $logger->debug(var_export($helper->getDecodedMessage($message),true));
+        $logger->debug(var_export($helper->getDecodedMessage($helper->convertMessage($message)),true));
 
         return $message;
     }
