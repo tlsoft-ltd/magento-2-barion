@@ -78,7 +78,7 @@ class ResponseHandler implements HandlerInterface
 
         $result = $helper->getDecodedMessage($response[0]);
 
-        $url = $helper->getCustomerUrl();
+        $url = $helper->getCustomerUrl()."?id=".$result["PaymentId"];
 
         $customerSession = $this->customerSession;
         $customerSession->setRedirectUrl($url);
