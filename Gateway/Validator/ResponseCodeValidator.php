@@ -105,7 +105,7 @@ class ResponseCodeValidator extends AbstractValidator
         $logger->debug(var_export($result,true));
 
 		if(array_key_exists(self::STATUS,$result)){
-            if($result[self::STATUS]=="Succeeded"||$result[self::STATUS]=="PartiallySucceeded"||$result[self::STATUS]=="Waiting"){
+            if($result[self::STATUS]=="Prepared"){
                 return true;
             }
         }
