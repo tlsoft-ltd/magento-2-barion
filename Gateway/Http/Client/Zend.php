@@ -103,7 +103,9 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
         $client->setUrlEncodeBody($transferObject->shouldEncode());
         $client->setUri($transferObject->getUri());
 
-        $this->logger->debug($log);
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($log,true));
 
         try {
             $response = $client->request();
