@@ -118,38 +118,38 @@ class InitializeRequest implements BuilderInterface
             $i++;
         }
 
-        $message["Transactions"] = [[
+        $message["Transactions"] = [
             "POSTransactionId" => $order->getOrderIncrementId(),
             "Payee" => $this->getConfig("email", $providerConfig),
             "Total" => $helper->formatOrderTotal($order->getGrandTotalAmount(), $order->getCurrencyCode()),
             "Items" => $products
-        ]];
+        ];
 
         $message["OrderNumber"]=$order->getOrderIncrementId();
 
 
-        $message["ShippingAddress"] = [[
+        $message["ShippingAddress"] = [
             "Country" => $shippingAddress->getCountryId(),
             "City" => $shippingAddress->getCity(),
             "Zip" => $shippingAddress->getPostcode(),
             "Street" => $shippingAddress->getStreetLine1(),
             "Street2" => $shippingAddress->getStreetLine2(),
             "FullName" => $shippingAddress->getFirstname()." ".$shippingAddress->getLastname()
-        ]];
+        ];
 
         $message["Locale"] = $helper->getLocaleCode($storeId);
         $message["Currency"] = $order->getCurrencyCode();
 
-        $message["BillingAddress"] = [[
+        $message["BillingAddress"] = [
             "Country" => $billingAddress->getCountryId(),
             "City" => $billingAddress->getCity(),
             "Zip" => $billingAddress->getPostcode(),
             "Street" => $billingAddress->getStreetLine1(),
             "Street2" => $billingAddress->getStreetLine2(),
             "FullName" => $billingAddress->getFirstname()." ".$billingAddress->getLastname()
-        ]];
+        ];
 
-        $message["PayerAccountInformation"] = [["SuspiciousActivityIndicator" => "NoSuspiciousActivityObserved"]];
+        $message["PayerAccountInformation"] = ["SuspiciousActivityIndicator" => "NoSuspiciousActivityObserved"];
         $message["ChallengePreference"] = "NoPreference";
 
         $logger->debug(var_export($message,true));
