@@ -118,12 +118,12 @@ class InitializeRequest implements BuilderInterface
             $i++;
         }
 
-        $message["Transactions"] = [
+        $message["Transactions"] = [[
             "POSTransactionId" => $order->getOrderIncrementId(),
             "Payee" => $this->getConfig("email", $providerConfig),
             "Total" => $helper->formatOrderTotal($order->getGrandTotalAmount(), $order->getCurrencyCode()),
             "Items" => $products
-        ];
+        ]];
 
         $message["OrderNumber"]=$order->getOrderIncrementId();
 
@@ -154,6 +154,7 @@ class InitializeRequest implements BuilderInterface
 
         $logger->debug(var_export($message,true));
         $logger->debug(var_export($helper->convertMessage($message),true));
+        $logger->debug(var_export($helper->getDecodedMessage($message),true));
 
         return $message;
     }
