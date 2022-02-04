@@ -152,6 +152,7 @@ class InitializeRequest implements BuilderInterface
         $message["PayerAccountInformation"] = [["SuspiciousActivityIndicator" => "NoSuspiciousActivityObserved"]];
         $message["ChallengePreference"] = "NoPreference";
 
+        $logger->debug(var_export($message,true));
         $logger->debug(var_export($helper->convertMessage($message),true));
 
         return $message;
