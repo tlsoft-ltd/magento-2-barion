@@ -181,7 +181,7 @@ class Communication extends AbstractHelper
                         ->setOrder($order)
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
-                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $helper->convertMessage($result)])
                         ->build(Transaction::TYPE_CAPTURE);
 
                     $orderManagement->notify($order->getEntityId());
