@@ -265,7 +265,7 @@ class Communication extends AbstractHelper
             $orderManagement->cancel($order->getId());
 
             $status = $orderManagement->getStatus($order->getId());
-            $order->addCommentToStatusHistory(__('Closed by CIB module.') . '-' . $response, $status);
+            $order->addCommentToStatusHistory(__('Closed by Barion module. CURL error.') . '-' . $response, $status);
 
             $this->responseCode = ResultCodes::RESULT_ERROR;
         }
@@ -378,15 +378,10 @@ class Communication extends AbstractHelper
         curl_setopt_array($ch, $options);
         $retValue = curl_exec($ch);
         $error = curl_error($ch);
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($url,true));
-        $logger->debug(var_export($error,true));
-        $logger->debug(var_export($retValue,true));
         if ($retValue === FALSE) {
             $error = curl_error($ch);
             curl_close($ch);
-            return $error;
+            return false;
         } else {
             curl_close($ch);
             return $retValue;
