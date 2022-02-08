@@ -166,6 +166,9 @@ class Communication extends AbstractHelper
             $result = $helper->getDecodedMessage($response);
 
             if (count($result["Errors"])<1) {
+                unset($result["Errors"]);
+                unset($result["AllowedFundingSources"]);
+                unset($result["Transactions"]);
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
