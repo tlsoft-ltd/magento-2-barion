@@ -122,10 +122,6 @@ class Communication extends AbstractHelper
         $methodCode = "bariongateway";
 
         $transaction_id = $params["paymentId"];
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($params,true));
-
 
         if (!$order)
             $order = $this->checkoutSession->getLastRealOrder();
@@ -159,23 +155,15 @@ class Communication extends AbstractHelper
 
         $resulttext = __('Transaction ID') . ": " . $transaction_id . "\n";
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($helper->getStateUrl() . $params,true));
-
         $response = $this->cURL($helper->getStateUrl() . $params);
 
         if ($response != false) {
-            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-            $logger = $objectManager->get('Psr\Log\LoggerInterface');
-            $logger->debug(var_export($response,true));
-            $result = $helper->getDecodedMessage($response);
 
             $payment = $order->getPayment();
 
             //@todo Handle response information.
 
-            if (count($result["Errors"] < 1)) {
+            if (count($result["Errors"])<1) {
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
