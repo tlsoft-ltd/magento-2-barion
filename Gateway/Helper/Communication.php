@@ -156,6 +156,10 @@ class Communication extends AbstractHelper
 
         $resulttext = __('Transaction ID') . ": " . $transaction_id . "\n";
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($helper->getStateUrl() . $params,true));
+
         $response = $this->cURL($helper->getStateUrl() . $params);
 
         if ($response != false) {
