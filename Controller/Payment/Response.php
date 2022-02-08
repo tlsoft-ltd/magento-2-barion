@@ -56,6 +56,10 @@ class Response extends Action
 
         $result = $this->helper->processResponse($urlParams);
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($result->getCode(),true));
+
         switch ($result->getCode()) {
             case ResultCodes::RESULT_TIMEOUT:
             case ResultCodes::RESULT_ERROR:
