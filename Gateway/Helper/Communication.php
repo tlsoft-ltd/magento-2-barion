@@ -159,7 +159,7 @@ class Communication extends AbstractHelper
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($response,true));
+        $logger->debug(var_export($helper->getStateUrl() . $params,true));
 
         if ($response != false) {
 
@@ -355,12 +355,17 @@ class Communication extends AbstractHelper
 
     protected function cURL($url)
     {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        if ($userAgent == "") {
+            $cver = curl_version();
+            $userAgent = "curl/" . $cver["version"] . " " .$cver["ssl_version"];
+        }
         $options = array(
             CURLOPT_RETURNTRANSFER => true,     // return web page
             CURLOPT_HEADER => 0,    // don't return headers
             CURLOPT_FOLLOWLOCATION => 0,     // follow redirects
             CURLOPT_ENCODING => "",       // handle all encodings
-            CURLOPT_USERAGENT => "spider", // who am i
+            CURLOPT_USERAGENT => $userAgent, // who am i
             CURLOPT_AUTOREFERER => true,     // set referer on redirect
             CURLOPT_CONNECTTIMEOUT => 30,      // timeout on connect
             CURLOPT_TIMEOUT => 30,      // timeout on response
