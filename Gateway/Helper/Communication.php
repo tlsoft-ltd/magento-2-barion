@@ -159,6 +159,9 @@ class Communication extends AbstractHelper
         $response = $this->cURL($helper->getStateUrl() . $params);
 
         if ($response != false) {
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            $logger = $objectManager->get('Psr\Log\LoggerInterface');
+            $logger->debug(var_export($response,true));
             $result = $helper->getDecodedMessage($response);
 
             $payment = $order->getPayment();
