@@ -163,6 +163,8 @@ class Communication extends AbstractHelper
 
             //@todo Handle response information.
 
+            $result = $helper->getDecodedMessage($response);
+
             if (count($result["Errors"])<1) {
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
