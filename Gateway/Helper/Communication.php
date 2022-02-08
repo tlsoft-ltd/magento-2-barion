@@ -169,6 +169,7 @@ class Communication extends AbstractHelper
                 unset($result["Errors"]);
                 unset($result["AllowedFundingSources"]);
                 unset($result["Transactions"]);
+                unset($result["FundingInformation"]);
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
