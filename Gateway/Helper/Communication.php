@@ -157,10 +157,6 @@ class Communication extends AbstractHelper
 
         $response = $this->cURL($helper->getStateUrl() . $params);
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($helper->getStateUrl() . $params,true));
-
         if ($response != false) {
 
             $payment = $order->getPayment();
@@ -185,7 +181,7 @@ class Communication extends AbstractHelper
                         ->setOrder($order)
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
-                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $helper->convertMessage($result)])
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_CAPTURE);
 
                     $orderManagement->notify($order->getEntityId());
