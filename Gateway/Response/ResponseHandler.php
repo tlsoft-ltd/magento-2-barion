@@ -30,7 +30,7 @@ class ResponseHandler implements HandlerInterface
     /**
      * Transaction ID
      */
-    const TXN_ID = "TransactionId";
+    const TXN_ID = "PaymentId";
 
     /**
      * @var Data
@@ -82,9 +82,9 @@ class ResponseHandler implements HandlerInterface
 
         $customerSession = $this->customerSession;
         $customerSession->setRedirectUrl($url);
-        $customerSession->setTransactionId($result["Transactions"][0][self::TXN_ID]);
+        $customerSession->setTransactionId($result[self::TXN_ID]);
 
-        $payment->setTransactionId($result["Transactions"][0][self::TXN_ID]);
+        $payment->setTransactionId($result[self::TXN_ID]);
         $payment->setIsTransactionClosed(false);
 
         $order = $payment->getOrder();

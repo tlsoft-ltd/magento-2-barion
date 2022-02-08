@@ -178,8 +178,6 @@ class Communication extends AbstractHelper
                     $payment->setIsTransactionPending(false);
                     $payment->setIsTransactionApproved(true);
                     $payment->setLastTransId($transaction_id);
-                    $payment->setTransactionAdditionalInfo('PaymentId',$result['PaymentId']);
-                    $payment->setTransactionAdditionalInfo('POSId', $result['POSId']);
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
