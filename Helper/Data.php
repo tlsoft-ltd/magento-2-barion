@@ -202,6 +202,26 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Get Barion state url
+     * @return boolean|string
+     */
+    public function getStateUrl()
+    {
+        $test_mode = $this->getConfig("payment/bariongateway/test_mode");
+
+        if ($test_mode == 1) {
+            $url = $this->getConfig("payment/bariongateway/state_url_test");
+        } else {
+            $url = $this->getConfig("payment/bariongateway/state_url");
+        }
+
+        if (empty($url)) {
+            $url = false;
+        }
+        return $url;
+    }
+
+    /**
      * Get Barion url
      * @return boolean|string
      */

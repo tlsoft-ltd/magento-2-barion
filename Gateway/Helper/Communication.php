@@ -29,11 +29,11 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\DB\TransactionFactory;
-use Magento\Sales\Api\Data\TransactionInterface;
-use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderManagementInterface;
+use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Service\InvoiceService;
@@ -61,20 +61,20 @@ class Communication extends AbstractHelper
     private $responseCode;
 
     public function __construct(
-        Context $context,
-        Data $helper,
-        ManagerInterface $messageManager,
-        OrderInterface $orderRepository,
-        ConfigProvider $configProvider,
-        OrderManagementInterface $orderManagement,
-        InvoiceService $invoiceService,
-        TransactionFactory $transactionFactory,
-        BuilderInterface $transactionBuilder,
+        Context                        $context,
+        Data                           $helper,
+        ManagerInterface               $messageManager,
+        OrderInterface                 $orderRepository,
+        ConfigProvider                 $configProvider,
+        OrderManagementInterface       $orderManagement,
+        InvoiceService                 $invoiceService,
+        TransactionFactory             $transactionFactory,
+        BuilderInterface               $transactionBuilder,
         TransactionRepositoryInterface $transactionRepository,
-        FilterBuilder $filterBuilder,
-        FilterGroupBuilder $filterGroupBuilder,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        Session $checkoutSession
+        FilterBuilder                  $filterBuilder,
+        FilterGroupBuilder             $filterGroupBuilder,
+        SearchCriteriaBuilder          $searchCriteriaBuilder,
+        Session                        $checkoutSession
     )
     {
         parent::__construct($context);
@@ -100,20 +100,7 @@ class Communication extends AbstractHelper
      */
     public function processResponse($params = array())
     {
-        $helper = $this->helper;
-        $result = "";
-
-        $combined = "";
-        foreach ($params as $key => $value) {
-            if ($combined != "") {
-                $combined .= "&";
-            }
-            $combined .= $key . "=" . $value;
-        }
-
-        $result = $helper->getDecodedMessage($combined);
-
-        $this->processTransaction($result);
+        $this->processTransaction($params);
         return $this;
     }
 
@@ -134,7 +121,8 @@ class Communication extends AbstractHelper
         $helper = $this->helper;
         $methodCode = "bariongateway";
 
-        $transaction_id = $params["TRID"];
+        $transaction_id = $params["paymentId"];
+
 
         if (!$order)
             $order = $this->checkoutSession->getLastRealOrder();
@@ -159,78 +147,103 @@ class Communication extends AbstractHelper
                 }
             }
         }
-        $message = array();
-        $message["trid"] = $transaction_id;
+
         $config = $this->getProviderConfig($methodCode);
-        $message["pid"] = $this->getPid($config, $order->getStoreCurrencyCode());
-        $amountToCapture = $helper->formatOrderTotal($order->getGrandTotal(), $order->getStoreCurrencyCode());
-        $message["amount"] = $amountToCapture;
-        if ($orderComplete == true) {
-            $msg = 32;
-        } else {
-            $msg = 33;
-        }
 
-        $urlend = $helper->convertMessage($message, $msg);
+        $params = "?POSKey=" . $this->getPosKey($config) . "&PaymentId=" . $transaction_id;
 
-        $url = $helper->getMarketUrl() . "?" . $urlend;
+        $this->responseCode = ResultCodes::RESULT_PENDING;
 
-        $response = $this->cURL($url);
+        $resulttext = __('Transaction ID') . ": " . $transaction_id . "\n";
 
-        $sub = substr($response, 0, 3);
-        $resulttext = __('Transaction ID') . ": " . $params['TRID'] . "\n";
+        $response = $this->cURL($helper->getStateUrl() . $params);
 
-        if ($response != "The requested URL returned error: 500" && $sub != "RC=") {
+        if ($response != false) {
             $result = $helper->getDecodedMessage($response);
 
             $payment = $order->getPayment();
 
             //@todo Handle response information.
-            if ($result['RC'] == "00") {
-                $resulttext .= __('Authorization number') . ": " . $result['ANUM'];
-                $this->responseCode = ResultCodes::RESULT_SUCCESS;
-                $this->messageManager->addSuccessMessage($resulttext);
-                $payment->setIsTransactionClosed(true);
-                $payment->setIsTransactionPending(false);
-                $payment->setIsTransactionApproved(true);
-                $payment->setLastTransId($transaction_id);
-                $payment->setTransactionAdditionalInfo('RT', $result['RT']);
-                $payment->setTransactionAdditionalInfo('TRID', $result['TRID']);
-                $payment->setTransactionAdditionalInfo('ANUM', $result['ANUM']);
 
-                $transaction = $this->transactionBuilder->setPayment($payment)
-                    ->setOrder($order)
-                    ->setTransactionId($transaction_id)
-                    ->setFailSafe(true)
-                    ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                    ->build(Transaction::TYPE_CAPTURE);
+            if (count($result["Errors"] < 1)) {
+                if ($result['Status'] == "Succeeded") {
+                    $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
+                    $this->responseCode = ResultCodes::RESULT_SUCCESS;
+                    $this->messageManager->addSuccessMessage($resulttext);
+                    $payment->setIsTransactionClosed(true);
+                    $payment->setIsTransactionPending(false);
+                    $payment->setIsTransactionApproved(true);
+                    $payment->setLastTransId($transaction_id);
+                    $payment->setTransactionAdditionalInfo('PaymentId',$result['PaymentId']);
+                    $payment->setTransactionAdditionalInfo('POSId', $result['POSId']);
 
-                $orderManagement->notify($order->getEntityId());
+                    $transaction = $this->transactionBuilder->setPayment($payment)
+                        ->setOrder($order)
+                        ->setTransactionId($transaction_id)
+                        ->setFailSafe(true)
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
+                        ->build(Transaction::TYPE_CAPTURE);
 
-                $transaction->save();
-                $payment->save();
-            } elseif ($result['RC'] == "C2") {//returned by user - cancel transaction
-                $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
-                $this->messageManager->addErrorMessage($resulttext);
+                    $orderManagement->notify($order->getEntityId());
 
-                $payment->setIsTransactionClosed(true);
-                $payment->setShouldCloseParentTransaction(true);
+                    $transaction->save();
+                    $payment->save();
+                } elseif ($result['Status'] == "CANCELED") {//returned by user - cancel transaction
+                    $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
+                    $this->messageManager->addErrorMessage($resulttext);
 
-                $transaction = $this->transactionBuilder->setPayment($payment)
-                    ->setOrder($order)
-                    ->setTransactionId($transaction_id)
-                    ->setFailSafe(true)
-                    ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                    ->build(Transaction::TYPE_ORDER);
+                    $payment->setIsTransactionClosed(true);
+                    $payment->setShouldCloseParentTransaction(true);
 
-                $transaction->save();
+                    $transaction = $this->transactionBuilder->setPayment($payment)
+                        ->setOrder($order)
+                        ->setTransactionId($transaction_id)
+                        ->setFailSafe(true)
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
+                        ->build(Transaction::TYPE_ORDER);
 
-                $orderManagement->cancel($order->getId());
+                    $transaction->save();
 
-                $status = $orderManagement->getStatus($order->getId());
-                $order->addCommentToStatusHistory(__('Closed by CIB module.'), $status);
-            } elseif ($result['RC'] == "PR") {
+                    $orderManagement->cancel($order->getId());
 
+                    $status = $orderManagement->getStatus($order->getId());
+                    $order->addCommentToStatusHistory(__('Closed by Barion module.'), $status);
+                } elseif ($result['Status']=="Prepared"||$result['Status']=="Started") {
+
+                    $payment->setIsTransactionClosed(false);
+
+                    $transaction = $this->transactionBuilder->setPayment($payment)
+                        ->setOrder($order)
+                        ->setTransactionId($transaction_id)
+                        ->setFailSafe(true)
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
+                        ->build(Transaction::TYPE_ORDER);
+
+                    $transaction->save();
+
+                    $this->responseCode = ResultCodes::RESULT_PENDING;
+                } else {
+
+                    $payment->setIsTransactionClosed(true);
+
+                    $transaction = $this->transactionBuilder->setPayment($payment)
+                        ->setOrder($order)
+                        ->setTransactionId($transaction_id)
+                        ->setFailSafe(true)
+                        ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
+                        ->build(Transaction::TYPE_ORDER);
+
+                    $transaction->save();
+
+                    $this->responseCode = ResultCodes::RESULT_ERROR;
+                    $orderManagement->cancel($order->getId());
+
+                    $status = $orderManagement->getStatus($order->getId());
+                    $order->addCommentToStatusHistory(__('Closed by CIB module.'), $status);
+
+                    $this->messageManager->addErrorMessage($resulttext);
+                }
+            }else{
                 $payment->setIsTransactionClosed(false);
 
                 $transaction = $this->transactionBuilder->setPayment($payment)
@@ -243,26 +256,6 @@ class Communication extends AbstractHelper
                 $transaction->save();
 
                 $this->responseCode = ResultCodes::RESULT_PENDING;
-            } else {
-
-                $payment->setIsTransactionClosed(true);
-
-                $transaction = $this->transactionBuilder->setPayment($payment)
-                    ->setOrder($order)
-                    ->setTransactionId($transaction_id)
-                    ->setFailSafe(true)
-                    ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                    ->build(Transaction::TYPE_ORDER);
-
-                $transaction->save();
-
-                $this->responseCode = ResultCodes::RESULT_ERROR;
-                $orderManagement->cancel($order->getId());
-
-                $status = $orderManagement->getStatus($order->getId());
-                $order->addCommentToStatusHistory(__('Closed by CIB module.'), $status);
-
-                $this->messageManager->addErrorMessage($resulttext);
             }
         } else {
             $orderManagement->cancel($order->getId());
@@ -276,18 +269,69 @@ class Communication extends AbstractHelper
         return $this;
     }
 
+    /**
+     * Get search criteria for collection filtering
+     * @param array $criteria
+     * @return SearchCriteria|null
+     */
+    private function getSearchCriteria($criteria = array())
+    {
+        $search = "";
+        $groups = array();
+        foreach ($criteria as $crit) {
+            $filter = $this->getFilter($crit);
+            if (is_object($filter)) {
+                $group = $this->getFilterGroup($filter);
+                $groups[] = $group;
+            }
+        }
+        if (count($groups) > 0) {
+            $search = $this->searchCriteria;
+            $search->setFilterGroups($groups);
+            $search = $search->create();
+        }
+        return $search;
+    }
+
+    /**
+     * Get filter for search criteria
+     * @param array $criteria
+     * @return null|Filter
+     */
+    private function getFilter($criteria = array())
+    {
+        $filter = "";
+        if (count($criteria) > 0) {
+            $filter = clone $this->filterBuilder;
+            $filter->setField($criteria["field"]);
+            $filter->setValue($criteria["value"]);
+            $filter->setConditionType($criteria["condition"]);
+            $filter = $filter->create();
+        }
+        return $filter;
+    }
+
+    /**
+     * Get Filter grouo for the search criteria builder
+     * @param Filter $filter
+     * @return FilterGroup
+     */
+    private function getFilterGroup(Filter $filter)
+    {
+        $group = clone $this->filterGroup;
+        $group->addFilter($filter);
+        $group = $group->create();
+        return $group;
+    }
+
     protected function getProviderConfig(string $payment)
     {
         return $this->configProvider->getProviderConfig($payment);
     }
 
-    protected function getPid(array $config, $currency = '')
+    protected function getPosKey(array $config)
     {
-        if ($currency == "HUF") {
-            return $this->getConfig("pid_huf", $config);
-        } else {
-            return $this->getConfig("pid_eur", $config);
-        }
+        return $this->getConfig("poskey", $config);
     }
 
     /**
@@ -376,9 +420,9 @@ class Communication extends AbstractHelper
             $payment->setIsTransactionClosed(true);
             $payment->setShouldCloseParentTransaction(true);
             throw new \UnexpectedValueException('The transaction has been already closed.');
-        } else if($result['STATUS'] == 10) {
+        } else if ($result['STATUS'] == 10) {
             return false;
-        }else {
+        } else {
             if ($amount != $total):
                 throw new \UnexpectedValueException('Partial refund cannot completed yet. Wait for the bank closing hour.');
             else:
@@ -398,61 +442,6 @@ class Communication extends AbstractHelper
     public function getCode()
     {
         return $this->responseCode;
-    }
-
-    /**
-     * Get search criteria for collection filtering
-     * @param array $criteria
-     * @return SearchCriteria|null
-     */
-    private function getSearchCriteria($criteria = array())
-    {
-        $search = "";
-        $groups = array();
-        foreach ($criteria as $crit) {
-            $filter = $this->getFilter($crit);
-            if (is_object($filter)) {
-                $group = $this->getFilterGroup($filter);
-                $groups[] = $group;
-            }
-        }
-        if (count($groups) > 0) {
-            $search = $this->searchCriteria;
-            $search->setFilterGroups($groups);
-            $search = $search->create();
-        }
-        return $search;
-    }
-
-    /**
-     * Get filter for search criteria
-     * @param array $criteria
-     * @return null|Filter
-     */
-    private function getFilter($criteria = array())
-    {
-        $filter = "";
-        if (count($criteria) > 0) {
-            $filter = clone $this->filterBuilder;
-            $filter->setField($criteria["field"]);
-            $filter->setValue($criteria["value"]);
-            $filter->setConditionType($criteria["condition"]);
-            $filter = $filter->create();
-        }
-        return $filter;
-    }
-
-    /**
-     * Get Filter grouo for the search criteria builder
-     * @param Filter $filter
-     * @return FilterGroup
-     */
-    private function getFilterGroup(Filter $filter)
-    {
-        $group = clone $this->filterGroup;
-        $group->addFilter($filter);
-        $group = $group->create();
-        return $group;
     }
 
 
