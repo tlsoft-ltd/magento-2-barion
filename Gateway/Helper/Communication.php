@@ -377,6 +377,10 @@ class Communication extends AbstractHelper
         $ch = curl_init($url);
         curl_setopt_array($ch, $options);
         $retValue = curl_exec($ch);
+        $error = curl_error($ch);
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($logger,true));
         if ($retValue === FALSE) {
             $error = curl_error($ch);
             curl_close($ch);
