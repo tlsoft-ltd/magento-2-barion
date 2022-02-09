@@ -34,6 +34,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Service\InvoiceService;
@@ -175,7 +176,9 @@ class Communication extends AbstractHelper
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
                     $this->messageManager->addSuccessMessage($resulttext);
-                    $payment->setIsTransactionClosed(true);
+                    $payment->setIsTransactionClosed(false);
+                    $payment->setShouldCloseParentTransaction("Completed");
+                    $payment->setCurrencyCode($result["Currency"]);
                     $payment->setIsTransactionPending(false);
                     $payment->setIsTransactionApproved(true);
                     $payment->setLastTransId($transaction_id);
@@ -188,6 +191,8 @@ class Communication extends AbstractHelper
                         ->build(Transaction::TYPE_CAPTURE);
 
                     $orderManagement->notify($order->getEntityId());
+
+                    $payment->registerCaptureNotification($order->getBaseGrandTotal());
 
                     $transaction->save();
                     $payment->save();
