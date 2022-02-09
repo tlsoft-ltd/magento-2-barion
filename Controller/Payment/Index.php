@@ -56,11 +56,13 @@ class Index extends Action
     {
         $customerSession = $this->customerSession;
         $redirectUrl = $customerSession->getRedirectUrl();
+
         if ($redirectUrl) {
             $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
             $resultRedirect->setUrl($redirectUrl);
             return $resultRedirect;
         }
+
         return false;
     }
 }
