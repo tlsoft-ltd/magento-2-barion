@@ -41,6 +41,7 @@ use Magento\Sales\Model\Service\InvoiceService;
 use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Config\Source\ResultCodes;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
+use Magento\Sales\Model\Order\Payment\State\AuthorizeCommand;
 
 class Communication extends AbstractHelper
 {
@@ -75,7 +76,8 @@ class Communication extends AbstractHelper
         FilterBuilder                  $filterBuilder,
         FilterGroupBuilder             $filterGroupBuilder,
         SearchCriteriaBuilder          $searchCriteriaBuilder,
-        Session                        $checkoutSession
+        Session                        $checkoutSession,
+        AuthorizeCommand $authorizeCommand
     )
     {
         parent::__construct($context);
@@ -92,6 +94,7 @@ class Communication extends AbstractHelper
         $this->filterBuilder = $filterBuilder;
         $this->filterGroup = $filterGroupBuilder;
         $this->searchCriteria = $searchCriteriaBuilder;
+        $this->authorizeCommand = $authorizeCommand;
     }
 
     /**
@@ -190,11 +193,18 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_CAPTURE);
 
+                    $message = $this->authorizeCommand->execute($payment, $order->getBaseTotalDue(), $payment->getOrder());
+
+                    $message = $payment->prependMessage($message);
+
+                    $payment->addTransactionCommentsToOrder($transaction, $message);
+
                     //$orderManagement->notify($order->getEntityId());
 
-                    $payment->registerCaptureNotification($order->getBaseGrandTotal());
+                    $payment->registerAuthorizationNotification($order->getBaseTotalDue());
+                    $payment->registerCaptureNotification($order->getBaseTotalDue());
 
-                    $transaction->save();
+
                     $payment->save();
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
