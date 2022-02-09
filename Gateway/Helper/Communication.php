@@ -190,7 +190,7 @@ class Communication extends AbstractHelper
 
                     $transaction->save();
                     $payment->save();
-                } elseif ($result['Status'] == "CANCELED") {//returned by user - cancel transaction
+                } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
                     $this->messageManager->addErrorMessage($resulttext);
 
