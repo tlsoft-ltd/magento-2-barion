@@ -165,11 +165,12 @@ class Communication extends AbstractHelper
 
             $result = $helper->getDecodedMessage($response);
 
+            unset($result["AllowedFundingSources"]);
+            unset($result["Transactions"]);
+            unset($result["FundingInformation"]);
+
             if (count($result["Errors"])<1) {
                 unset($result["Errors"]);
-                unset($result["AllowedFundingSources"]);
-                unset($result["Transactions"]);
-                unset($result["FundingInformation"]);
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
@@ -246,6 +247,8 @@ class Communication extends AbstractHelper
                     $this->messageManager->addErrorMessage($resulttext);
                 }
             }else{
+                $error = $helper->convertMessage($result["Errors"]);
+                $result["Errors"] = $error;
                 $payment->setIsTransactionClosed(false);
 
                 $transaction = $this->transactionBuilder->setPayment($payment)
