@@ -185,7 +185,6 @@ class Communication extends AbstractHelper
                     $payment->setIsTransactionPending(false);
                     $payment->setIsTransactionApproved(true);
                     $payment->setLastTransId($transaction_id);
-                    $payment->save();
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
@@ -194,15 +193,14 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_CAPTURE);
 
-                    $message = $this->authorizeCommand->execute($payment, $order->getBaseTotalDue(), $payment->getOrder());
-
-                    $message = $payment->prependMessage($message);
-
-                    $payment->addTransactionCommentsToOrder($transaction, $message);
+                    if ($transaction) {
+                        $this->transactionRepository->save(
+                            $transaction
+                        );
+                    }
 
                     //$orderManagement->notify($order->getEntityId());
 
-                    $payment->registerAuthorizationNotification($order->getBaseTotalDue());
                     $payment->registerCaptureNotification($order->getBaseTotalDue());
 
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
