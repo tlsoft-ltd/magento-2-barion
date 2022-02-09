@@ -59,6 +59,7 @@ class Response extends Action
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->get('Psr\Log\LoggerInterface');
         $logger->debug(var_export($this->session->getLastRealOrder()->getRealOrderId(),true));
+        $logger->debug(var_export('xx',true));
 
         switch ($result->getCode()) {
             case ResultCodes::RESULT_TIMEOUT:
