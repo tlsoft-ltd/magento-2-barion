@@ -190,7 +190,7 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_CAPTURE);
 
-                    $orderManagement->notify($order->getEntityId());
+                    //$orderManagement->notify($order->getEntityId());
 
                     $payment->registerCaptureNotification($order->getBaseGrandTotal());
 
