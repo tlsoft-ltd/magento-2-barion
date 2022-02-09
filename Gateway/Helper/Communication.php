@@ -185,6 +185,7 @@ class Communication extends AbstractHelper
                     $payment->setIsTransactionPending(false);
                     $payment->setIsTransactionApproved(true);
                     $payment->setLastTransId($transaction_id);
+                    $payment->save();
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
@@ -204,8 +205,6 @@ class Communication extends AbstractHelper
                     $payment->registerAuthorizationNotification($order->getBaseTotalDue());
                     $payment->registerCaptureNotification($order->getBaseTotalDue());
 
-
-                    $payment->save();
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
                     $this->messageManager->addErrorMessage($resulttext);
