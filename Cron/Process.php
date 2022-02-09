@@ -47,7 +47,7 @@ class Process
 
     public function execute()
     {
-        return;
+
         $orderRepository = $this->orderRepository;
         $date = $this->timezone->date('-20 minute', null, true, false);
         $date = $date->format('Y-m-d H:i');
@@ -74,7 +74,7 @@ class Process
                             $trid = $transaction->getTxnId();
                             if(empty($trid))
                                 continue;
-                            $params["TRID"] = $trid;
+                            $params["paymentId"] = $trid;
                             $this->helper->processTransaction($params, false, $order);
                             $i++;
                         }
