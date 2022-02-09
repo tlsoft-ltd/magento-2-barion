@@ -42,6 +42,7 @@ use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Config\Source\ResultCodes;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
 use Magento\Sales\Model\Order\Payment\State\AuthorizeCommand;
+use \Magento\Sales\Model\Order\Email\Sender\OrderSender;
 
 class Communication extends AbstractHelper
 {
@@ -77,7 +78,8 @@ class Communication extends AbstractHelper
         FilterGroupBuilder             $filterGroupBuilder,
         SearchCriteriaBuilder          $searchCriteriaBuilder,
         Session                        $checkoutSession,
-        AuthorizeCommand $authorizeCommand
+        AuthorizeCommand $authorizeCommand,
+        OrderSender $orderSender
     )
     {
         parent::__construct($context);
@@ -95,6 +97,7 @@ class Communication extends AbstractHelper
         $this->filterGroup = $filterGroupBuilder;
         $this->searchCriteria = $searchCriteriaBuilder;
         $this->authorizeCommand = $authorizeCommand;
+        $this->orderSender = $orderSender;
     }
 
     /**
@@ -179,12 +182,10 @@ class Communication extends AbstractHelper
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
                     $this->messageManager->addSuccessMessage($resulttext);
-                    $payment->setIsTransactionClosed(false);
-                    $payment->setShouldCloseParentTransaction("Completed");
-                    $payment->setCurrencyCode($result["Currency"]);
-                    $payment->setIsTransactionPending(false);
                     $payment->setIsTransactionApproved(true);
                     $payment->setLastTransId($transaction_id);
+                    $payment->setAdditionalInformation([Transaction::RAW_DETAILS => $result]);
+                    $payment->place();
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
@@ -199,9 +200,7 @@ class Communication extends AbstractHelper
                         );
                     }
 
-                    //$orderManagement->notify($order->getEntityId());
-
-                    $payment->registerCaptureNotification($order->getBaseTotalDue());
+                    $this->orderSender->send($order);
 
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
@@ -217,7 +216,11 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_ORDER);
 
-                    $transaction->save();
+                    if ($transaction) {
+                        $this->transactionRepository->save(
+                            $transaction
+                        );
+                    }
 
                     $orderManagement->cancel($order->getId());
 
@@ -234,7 +237,11 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_ORDER);
 
-                    $transaction->save();
+                    if ($transaction) {
+                        $this->transactionRepository->save(
+                            $transaction
+                        );
+                    }
 
                     $this->responseCode = ResultCodes::RESULT_PENDING;
                 } else {
@@ -248,7 +255,11 @@ class Communication extends AbstractHelper
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(Transaction::TYPE_ORDER);
 
-                    $transaction->save();
+                    if ($transaction) {
+                        $this->transactionRepository->save(
+                            $transaction
+                        );
+                    }
 
                     $this->responseCode = ResultCodes::RESULT_ERROR;
                     $orderManagement->cancel($order->getId());
@@ -270,7 +281,11 @@ class Communication extends AbstractHelper
                     ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                     ->build(Transaction::TYPE_ORDER);
 
-                $transaction->save();
+                if ($transaction) {
+                    $this->transactionRepository->save(
+                        $transaction
+                    );
+                }
 
                 $this->responseCode = ResultCodes::RESULT_PENDING;
             }
