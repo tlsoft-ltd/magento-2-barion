@@ -4,7 +4,7 @@
     <option name="pluginEnabled" value="true" />
     <option name="defaultLicenseName" value="Proprietary" />
     <option name="magentoPath" value="F:\Visual studio repos\Körmendi Zoli\Ikiegészítők magento2" />
-    <option name="magentoVersion" value="2.4.2" />
-    <option name="magentoEdition" value="Magento Open Source" />
+    <option name="magentoVersion" value="any" />
+    <option name="magentoEdition" value="Platform Version:" />
   </component>
 </project>
