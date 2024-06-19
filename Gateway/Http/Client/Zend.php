@@ -57,7 +57,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
     public function __construct(
         LaminasClientFactory  $clientFactory,
         Logger             $logger,
-        ConverterInterface $converter = null
+        ConverterInterface $converter
     )
     {
         $this->clientFactory = $clientFactory;
