@@ -23,6 +23,7 @@ namespace TLSoft\BarionGateway\Gateway\Http\Client;
 
 use LogicException;
 use Laminas\Http\Exception\RuntimeException;
+use Magento\Framework\HTTP\LaminasClient
 use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
@@ -78,7 +79,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
         $client = $this->clientFactory->create();
 
-        $client->setConfig($transferObject->getClientConfig());
+        $client->setOptions($transferObject->getClientConfig());
         $client->setMethod($transferObject->getMethod());
 
         switch ($transferObject->getMethod()) {
