@@ -28,7 +28,7 @@ use Magento\Framework\Locale\Resolver;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Framework\Json\Helper\Data as JsonHelper;
+use Magento\Framework\Serialize\Serializer\Json as JsonHelper;
 
 /**
  * @property Resolver $localeResolver
@@ -39,6 +39,11 @@ use Magento\Framework\Json\Helper\Data as JsonHelper;
  */
 class Data extends AbstractHelper
 {
+    private JsonHelper $jsonHelper;
+    private DirectoryList $directoryList;
+    private UrlInterface $urlFactory;
+    private TimezoneInterface $timezoneFactory;
+    private Resolver $localeResolver;
 
     /**
      * __construct
@@ -81,7 +86,7 @@ class Data extends AbstractHelper
      * @param string $path
      * @return boolean|string
      */
-    protected function getConfig(string $path)
+    protected function getConfig(string $path): bool|string
     {
         if ($path) {
             return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
@@ -180,7 +185,7 @@ class Data extends AbstractHelper
     public function getEncodedMessage(array $message): string
     {
 
-        return $this->jsonHelper->jsonEncode($message);
+        return $this->jsonHelper->serialize($message);
 
     }
 
@@ -188,7 +193,7 @@ class Data extends AbstractHelper
      * Get Barion state url
      * @return boolean|string
      */
-    public function getStateUrl()
+    public function getStateUrl(): bool|string
     {
         $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
@@ -208,7 +213,7 @@ class Data extends AbstractHelper
      * Get Barion url
      * @return boolean|string
      */
-    public function getMarketUrl()
+    public function getMarketUrl(): bool|string
     {
         $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
@@ -228,7 +233,7 @@ class Data extends AbstractHelper
      * Get Barion redirect url
      * @return boolean|string
      */
-    public function getCustomerUrl()
+    public function getCustomerUrl(): bool|string
     {
         $test_mode = $this->getConfig("payment/bariongateway/test_mode");
 
@@ -253,7 +258,7 @@ class Data extends AbstractHelper
      */
     public function getDecodedMessage(string $message): array
     {
-        return $this->jsonHelper->jsonDecode($message);
+        return $this->jsonHelper->unserialize($message);
 
     }
 

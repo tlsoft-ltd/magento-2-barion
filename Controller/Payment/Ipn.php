@@ -31,6 +31,7 @@ use Magento\Framework\App\Action\Context;
  */
 class Ipn extends Action
 {
+    private Communication $helper;
 
     /**
      * Summary of __construct
@@ -45,7 +46,8 @@ class Ipn extends Action
         $this->helper = $helper;
     }
 
-    public function execute(){
+    public function execute(): void
+    {
         $urlParams = [$this->getRequest()->getPostValue()];
 
         $this->helper->processResponse($urlParams);

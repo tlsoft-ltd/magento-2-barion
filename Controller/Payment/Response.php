@@ -36,6 +36,9 @@ use Magento\Framework\App\Action\Context;
  */
 class Response extends Action
 {
+    private Session $session;
+    private Communication $helper;
+    private ManagerInterface $_messageManager;
 
     /**
      * Summary of __construct

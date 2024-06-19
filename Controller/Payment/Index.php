@@ -32,6 +32,7 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class Index extends Action
 {
+    private Session $customerSession;
 
     /**
      * Summary of __construct

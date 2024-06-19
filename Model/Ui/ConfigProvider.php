@@ -98,7 +98,7 @@ final class ConfigProvider implements ConfigProviderInterface
 	/**
 	 * @param array $providers
 	 */
-    protected function unifyProviderConfig(array &$providers)
+    protected function unifyProviderConfig(array &$providers): void
     {
         $keys = $this->collectProviderConfigKeys($providers);
 

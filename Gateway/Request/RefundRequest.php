@@ -21,6 +21,7 @@
 
 namespace TLSoft\BarionGateway\Gateway\Request;
 
+use AllowDynamicProperties;
 use InvalidArgumentException;
 use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
@@ -50,6 +51,7 @@ class RefundRequest implements BuilderInterface
 	 * @var ConfigProvider
 	 */
     private $configProvider;
+    private Communication $communicationHelper;
 
     public function __construct(
 		ConfigProvider $config,

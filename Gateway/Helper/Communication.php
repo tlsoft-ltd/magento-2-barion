@@ -66,6 +66,23 @@ use UnexpectedValueException;
 class Communication extends AbstractHelper
 {
 
+    private string $responseCode;
+    private OrderSender $orderSender;
+    private AuthorizeCommand $authorizeCommand;
+    private SearchCriteriaBuilder $searchCriteria;
+    private FilterGroupBuilder $filterGroup;
+    private FilterBuilder $filterBuilder;
+    private TransactionRepositoryInterface $transactionRepository;
+    private Session $checkoutSession;
+    private BuilderInterface $transactionBuilder;
+    private TransactionFactory $transactionFactory;
+    private InvoiceService $invoiceService;
+    private OrderManagementInterface $orderManagement;
+    private ConfigProvider $configProvider;
+    private OrderInterface $orderRepository;
+    private ManagerInterface $messageManager;
+    private Data $helper;
+
     public function __construct(
         Context                        $context,
         Data                           $helper,

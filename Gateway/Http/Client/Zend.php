@@ -44,13 +44,13 @@ use Laminas\Http\Request;
 class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientInterface
 {
 
-    private $clientFactory;
+    private ZendClientFactory|LaminasClientFactory $clientFactory;
 
-    private $converter;
+    private ConverterInterface $converter;
 
-    private $logger;
+    private Logger $logger;
     /**
-     * @param ZendClientFactory $clientFactory
+     * @param LaminasClientFactory $clientFactory
      * @param Logger $logger
      * @param ConverterInterface | null $converter
      */

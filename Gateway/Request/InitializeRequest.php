@@ -37,6 +37,10 @@ use UnexpectedValueException;
  */
 class InitializeRequest implements BuilderInterface
 {
+    private OrderAdapterInterface $order;
+    private ConfigProvider $configProvider;
+    private Data $helper;
+
     public function __construct(
         ConfigProvider $config,
         Data           $helper

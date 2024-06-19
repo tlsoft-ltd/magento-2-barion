@@ -38,6 +38,10 @@ use Magento\Sales\Api\Data\TransactionInterface;
  */
 class CaptureCommand implements CommandInterface
 {
+    private FilterBuilder $filterBuilder;
+    private SearchCriteriaBuilder $searchCriteriaBuilder;
+    private TransactionRepositoryInterface $transactionRepository;
+    private CommandPoolInterface $commandPool;
 
 
     /**

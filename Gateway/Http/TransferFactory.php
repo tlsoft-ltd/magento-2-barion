@@ -31,6 +31,8 @@ use TLSoft\BarionGateway\Helper\Data;
  */
 class TransferFactory implements TransferFactoryInterface
 {
+    private Data $helper;
+    private TransferBuilder $transferBuilder;
 
     /**
      * Summary of __construct

@@ -36,6 +36,8 @@ use TLSoft\BarionGateway\Helper\Data;
 class AvailabilityValidator extends AbstractValidator
 {
 	protected $_dataHelper;
+    private ScopeConfigInterface $config;
+    private StoreInterface $store;
 
     /**
      * Performs validation of result code

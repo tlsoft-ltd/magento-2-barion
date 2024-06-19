@@ -30,6 +30,7 @@ use TLSoft\BarionGateway\Helper\Data;
  */
 class RefundHandler implements HandlerInterface
 {
+    private Data $helper;
 
     /**
      * Summary of __construct

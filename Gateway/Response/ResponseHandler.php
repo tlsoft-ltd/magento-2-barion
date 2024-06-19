@@ -36,12 +36,12 @@ class ResponseHandler implements HandlerInterface
     /**
      * @var Data
      */
-    private $helper;
+    private Data $helper;
 
     /**
      * @var Session
      */
-    private $customerSession;
+    private Session $customerSession;
 
     /**
      * Summary of __construct

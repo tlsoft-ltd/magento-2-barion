@@ -45,6 +45,15 @@ class Process
 {
 
 
+    private Communication $helper;
+    private TransactionRepositoryInterface $transactionRepository;
+    private TimezoneInterface $timezone;
+    private SearchCriteriaBuilder $searchCriteria;
+    private FilterGroupBuilder $filterGroup;
+    private FilterBuilder $filterBuilder;
+    private Filter $filter;
+    private OrderRepositoryInterface $orderRepository;
+
     public function __construct(OrderRepositoryInterface $orderRepository, Filter $filter, FilterBuilder $filterBuilder, FilterGroupBuilder $filterGroup, SearchCriteriaBuilder $searchCriteria, TimezoneInterface $timezone, TransactionRepositoryInterface $transactionRepository, Communication $helper)
     {
         $this->orderRepository = $orderRepository;
