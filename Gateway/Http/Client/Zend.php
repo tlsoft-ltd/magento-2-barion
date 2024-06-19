@@ -35,7 +35,7 @@ use Laminas\Http\Request;
 /**
  * Class Zend
  * @property ZendClientFactory $clientFactory
- * @property ConverterInterface|null $converter
+ * @property ConverterInterface $converter
  * @property Logger $logger
  * @package Magento\Payment\Gateway\Http\Client
  * @api
@@ -46,7 +46,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
     private ZendClientFactory|LaminasClientFactory $clientFactory;
 
-    private ConverterInterface $converter;
+    private ConverterInterface|null $converter;
 
     private Logger $logger;
     /**
@@ -57,7 +57,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
     public function __construct(
         LaminasClientFactory  $clientFactory,
         Logger             $logger,
-        ConverterInterface $converter
+        ConverterInterface $converter = null
     )
     {
         $this->clientFactory = $clientFactory;
