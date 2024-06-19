@@ -23,7 +23,6 @@ namespace TLSoft\BarionGateway\Gateway\Http\Client;
 
 use LogicException;
 use Laminas\Http\Exception\RuntimeException;
-use Magento\Framework\HTTP\LaminasClient
 use Magento\Framework\HTTP\LaminasClientFactory;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
