@@ -29,6 +29,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 final class ConfigProvider implements ConfigProviderInterface
 {
     const CODE = 'bariongateway';
+    private ScopeConfigInterface $scopeConfig;
 
     /**
 	 * @param ScopeConfigInterface $scopeConfig
