@@ -86,7 +86,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
                 $client->setParameterGet($transferObject->getBody());
                 break;
             case Request::METHOD_POST:
-                $client->setRawData($transferObject->getBody(), "application/json");
+                $client->setParameterPost($transferObject->getBody(), "application/json");
                 break;
             default:
                 throw new LogicException(
@@ -102,7 +102,7 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
         $client->setUri($transferObject->getUri());
 
         try {
-            $response = $client->request();
+            $response = $client->send();
 
             $result = $this->converter
                 ? $this->converter->convert($response->getBody())
