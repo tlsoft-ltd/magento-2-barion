@@ -30,33 +30,15 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Sales\Api\Data\TransactionInterface;
 
+/**
+ * @property CommandPoolInterface $commandPool
+ * @property TransactionRepositoryInterface $transactionRepository
+ * @property SearchCriteriaBuilder $searchCriteriaBuilder
+ * @property FilterBuilder $filterBuilder
+ */
 class CaptureCommand implements CommandInterface
 {
 
-    /**
-     * @var CommandPoolInterface
-     */
-    private $commandPool;
-
-    /**
-     * @var TransactionRepositoryInterface
-     */
-    private $transactionRepository;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
-    /**
-     * @var FilterBuilder
-     */
-    private $filterBuilder;
-
-    /**
-     * @var Data
-     */
-    private $coreHelper;
 
     /**
      * CaptureStrategyCommand constructor.
@@ -116,6 +98,8 @@ class CaptureCommand implements CommandInterface
         if (!$isCaptured && $payment->getAuthorizationTransaction()) {
             return self::CAPTURE;
         }
+
+        return "";
 
     }
 

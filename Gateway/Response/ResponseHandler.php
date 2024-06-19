@@ -20,6 +20,7 @@
  */
 
 namespace TLSoft\BarionGateway\Gateway\Response;
+use InvalidArgumentException;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use TLSoft\BarionGateway\Helper\Data;
@@ -45,6 +46,7 @@ class ResponseHandler implements HandlerInterface
     /**
      * Summary of __construct
      * @param Data $helper
+     * @param Session $customerSession
      */
     public function __construct(
         Data $helper,
@@ -66,9 +68,8 @@ class ResponseHandler implements HandlerInterface
         if (!isset($handlingSubject['payment'])
             || !$handlingSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
-            throw new \InvalidArgumentException('Payment data object should be provided');
+            throw new InvalidArgumentException('Payment data object should be provided');
         }
-        /** @var PaymentDataObjectInterface $paymentDO */
         $paymentDO = $handlingSubject['payment'];
         $payment = $paymentDO->getPayment();
 

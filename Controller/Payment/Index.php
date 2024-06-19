@@ -27,13 +27,11 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 
+/**
+ * @property Session $customerSession
+ */
 class Index extends Action
 {
-
-    /**
-     * @var Session
-     */
-    private $customerSession;
 
     /**
      * Summary of __construct

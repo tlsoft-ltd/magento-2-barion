@@ -22,22 +22,30 @@
 namespace TLSoft\BarionGateway\Gateway\Validator;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Store\Api\Data\StoreInterface;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use TLSoft\BarionGateway\Helper\Data;
+/**
+ * @property StoreInterface $store
+ * @property ScopeConfigInterface $config
+ */
 class AvailabilityValidator extends AbstractValidator
 {
 	protected $_dataHelper;
+
     /**
-	 * Performs validation of result code
-	 *
-	 * @param array $validationSubject
-	 * @return ResultInterface
-	 */
+     * Performs validation of result code
+     *
+     * @param ResultInterfaceFactory $resultFactory
+     * @param StoreManagerInterface $storeManager
+     * @param ScopeConfigInterface $config
+     * @param Data $dataHelper
+     * @throws NoSuchEntityException
+     */
 
 	public function __construct(
 		ResultInterfaceFactory $resultFactory,
@@ -51,24 +59,22 @@ class AvailabilityValidator extends AbstractValidator
 		$this->_dataHelper = $dataHelper;
     }
 
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
 
 		return $this->createResult(
-                true,
-                []
+                true
             );
 
 		$enabled = false;
-        if ($enabled==false) {
+        if (!$enabled) {
             return $this->createResult(
                 false,
                 [__('Currency not accepted.')]
             );
         }else{
 			return $this->createResult(
-                true,
-                []
+                true
             );
 		}
     }

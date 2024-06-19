@@ -24,15 +24,11 @@ use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 /**
  * Class ConfigProvider
+ * @property ScopeConfigInterface $scopeConfig
  */
 final class ConfigProvider implements ConfigProviderInterface
 {
     const CODE = 'bariongateway';
-
-	/**
-	 * @var ScopeConfigInterface
-	 */
-    protected $scopeConfig;
 
     /**
 	 * @param ScopeConfigInterface $scopeConfig
@@ -45,7 +41,7 @@ final class ConfigProvider implements ConfigProviderInterface
 	/**
 	 * @return array
 	 */
-    public function getConfig()
+    public function getConfig(): array
     {
         $providers = $this->getProviders($this->scopeConfig->getValue('payment'));
         $this->unifyProviderConfig($providers);
@@ -63,7 +59,7 @@ final class ConfigProvider implements ConfigProviderInterface
 	 * @param $code
 	 * @return array
 	 */
-    public function getProviderConfig($code)
+    public function getProviderConfig($code): array
     {
         $config = $this->getConfig();
 
@@ -79,7 +75,7 @@ final class ConfigProvider implements ConfigProviderInterface
 	 * @param array $scopeConfig
 	 * @return array
 	 */
-    protected function getProviders(array $scopeConfig)
+    protected function getProviders(array $scopeConfig): array
     {
         $prefix = self::CODE;
 
@@ -91,13 +87,11 @@ final class ConfigProvider implements ConfigProviderInterface
             ARRAY_FILTER_USE_BOTH
         );
 
-        $providers = array_map(
+        return array_map(
             function ($key, array $data) {
                 $data['name'] = $key;
                 return $data;
             }, array_keys($params), $params);
-
-        return $providers;
     }
 
 	/**
@@ -116,7 +110,7 @@ final class ConfigProvider implements ConfigProviderInterface
 	 * @param array $providers
 	 * @return array
 	 */
-    protected function collectProviderConfigKeys(array $providers)
+    protected function collectProviderConfigKeys(array $providers): array
     {
         $keys = [];
 

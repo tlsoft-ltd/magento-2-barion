@@ -19,6 +19,7 @@
  * @license     https://tlsoft.hu/license
  */
 namespace TLSoft\BarionGateway\Gateway\Validator;
+use InvalidArgumentException;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
@@ -36,11 +37,6 @@ class ResponseCodeValidator extends AbstractValidator
 	 */
     private $helper;
 
-	/**
-	 * @var ResultInterfaceFactory
-	 */
-    private $resultInterfaceFactory;
-
     /**
      * @var $errors
      */
@@ -51,10 +47,11 @@ class ResponseCodeValidator extends AbstractValidator
      */
     private $codes=[];
 
-	/**
-	 * Summary of __construct
-	 * @param Data $helper
-	 */
+    /**
+     * Summary of __construct
+     * @param Data $helper
+     * @param ResultInterfaceFactory $resultFactory
+     */
 	public function __construct(
 		Data $helper,
 		ResultInterfaceFactory $resultFactory
@@ -70,16 +67,15 @@ class ResponseCodeValidator extends AbstractValidator
 	 * @param array $validationSubject
 	 * @return ResultInterface
 	 */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         if (!isset($validationSubject['response']) || !is_array($validationSubject['response'])) {
-            throw new \InvalidArgumentException('Response does not exist');
+            throw new InvalidArgumentException('Response does not exist');
         }
         $response = $validationSubject['response'];
         if ($this->isSuccessfulTransaction($response)) {
             return $this->createResult(
-                true,
-                []
+                true
             );
         } else {
             return $this->createResult(
@@ -94,7 +90,7 @@ class ResponseCodeValidator extends AbstractValidator
 	 * @param array $response
 	 * @return bool
 	 */
-    private function isSuccessfulTransaction(array $response)
+    private function isSuccessfulTransaction(array $response): bool
     {
 		$helper = $this->helper;
 

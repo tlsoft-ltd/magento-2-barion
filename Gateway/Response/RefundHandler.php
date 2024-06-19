@@ -25,13 +25,11 @@ use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use TLSoft\BarionGateway\Helper\Data;
 
+/**
+ * @property Data $helper
+ */
 class RefundHandler implements HandlerInterface
 {
-
-    /**
-     * @var Data
-     */
-    private $helper;
 
     /**
      * Summary of __construct

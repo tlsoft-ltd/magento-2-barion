@@ -25,17 +25,12 @@ use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use TLSoft\BarionGateway\Helper\Data;
 
+/**
+ * @property Data $helper
+ * @property TransferBuilder $transferBuilder
+ */
 class TransferFactory implements TransferFactoryInterface
 {
-    /**
-	 * @var TransferBuilder
-	 */
-    private $transferBuilder;
-
-	/**
-	 * @var Data
-	 */
-	private $helper;
 
     /**
      * Summary of __construct
@@ -55,7 +50,7 @@ class TransferFactory implements TransferFactoryInterface
 	 * @param array $request
 	 * @return TransferInterface
 	 */
-    public function create(array $request)
+    public function create(array $request): TransferInterface
     {
 		$helper = $this->helper;
 

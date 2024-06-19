@@ -31,8 +31,20 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use TLSoft\BarionGateway\Gateway\Helper\Communication;
 
+/**
+ * @property OrderRepositoryInterface $orderRepository
+ * @property Filter $filter
+ * @property FilterBuilder $filterBuilder
+ * @property FilterGroupBuilder $filterGroup
+ * @property SearchCriteriaBuilder $searchCriteria
+ * @property TimezoneInterface $timezone
+ * @property TransactionRepositoryInterface $transactionRepository
+ * @property Communication $helper
+ */
 class Process
 {
+
+
     public function __construct(OrderRepositoryInterface $orderRepository, Filter $filter, FilterBuilder $filterBuilder, FilterGroupBuilder $filterGroup, SearchCriteriaBuilder $searchCriteria, TimezoneInterface $timezone, TransactionRepositoryInterface $transactionRepository, Communication $helper)
     {
         $this->orderRepository = $orderRepository;
@@ -96,7 +108,6 @@ class Process
      */
     private function getSearchCriteria($criteria = array())
     {
-        $search = "";
         $groups = array();
         foreach ($criteria as $crit) {
             $filter = $this->getFilter($crit);
@@ -136,11 +147,10 @@ class Process
      * @param Filter $filter
      * @return FilterGroup
      */
-    private function getFilterGroup(Filter $filter)
+    private function getFilterGroup(Filter $filter): FilterGroup
     {
         $group = clone $this->filterGroup;
         $group->addFilter($filter);
-        $group = $group->create();
-        return $group;
+        return $group->create();
     }
 }

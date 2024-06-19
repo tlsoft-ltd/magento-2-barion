@@ -21,30 +21,22 @@
 
 namespace TLSoft\BarionGateway\Gateway\Request;
 
+use InvalidArgumentException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
+use UnexpectedValueException;
 
+/**
+ * @property OrderAdapterInterface $order
+ * @property Data $helper
+ * @property ConfigProvider $configProvider
+ */
 class InitializeRequest implements BuilderInterface
 {
-    /**
-     * @var Data
-     */
-    private $helper;
-
-    /**
-     * @var ConfigProvider
-     */
-    private $configProvider;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
     public function __construct(
         ConfigProvider $config,
         Data           $helper
@@ -59,26 +51,26 @@ class InitializeRequest implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     * @throws LocalizedException
+     * @throws LocalizedException
      */
-    public function build(array $buildSubject)
+    public function build(array $buildSubject): array
     {
         if (!isset($buildSubject['payment'])
             || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
-            throw new \InvalidArgumentException('Payment data object should be provided');
+            throw new InvalidArgumentException('Payment data object should be provided');
         }
 
-        /** @var PaymentDataObjectInterface $payment */
         $payment = $buildSubject['payment'];
 
-        /** @var OrderAdapterInterface $order */
         $order = $payment->getOrder();
         $this->order = $order;
 
         $providerConfig = $this->getProviderConfig($payment);
 
         if (empty($providerConfig)) {
-            throw new \UnexpectedValueException('Payment method is disabled or connection data is missing.');
+            throw new UnexpectedValueException('Payment method is disabled or connection data is missing.');
         }
 
         $helper = $this->helper;
@@ -107,7 +99,7 @@ class InitializeRequest implements BuilderInterface
         foreach ($items as $item) {
             $products[$i]["Name"] = $item->getName();
             $products[$i]["Description"] = $item->getName();
-            $products[$i]["Quantity"] = number_format($item->getQtyOrdered(), 0);
+            $products[$i]["Quantity"] = number_format($item->getQtyOrdered());
             $products[$i]["Unit"] = "db";
             $products[$i]["UnitPrice"] = $helper->formatOrderTotal($item->getPriceInclTax(), $order->getCurrencyCode());
             $products[$i]["ItemTotal"] = $helper->formatOrderTotal($item->getRowTotalInclTax(), $order->getCurrencyCode());
@@ -157,7 +149,7 @@ class InitializeRequest implements BuilderInterface
      * @return array
      * @throws LocalizedException
      */
-    protected function getProviderConfig(PaymentDataObjectInterface $payment)
+    protected function getProviderConfig(PaymentDataObjectInterface $payment): array
     {
         $methodCode = $payment->getPayment()->getMethodInstance()->getCode();
 
@@ -167,13 +159,13 @@ class InitializeRequest implements BuilderInterface
     /**
      * Summary of getConfig
      * @param string $path
+     * @param array $config
      * @return boolean|string
      */
     protected function getConfig(string $path, array $config)
     {
         if ($path) {
-            $value = $config[$path];
-            return $value;
+            return $config[$path];
         }
 
         return false;

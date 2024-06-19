@@ -3,12 +3,6 @@
   "version": "0.0.1",
   "description": "Magento 2 Payment Gateway module for Barion Smart Gateway.",
   "type": "magento2-module",
-  "minimum-stability": "stable",
-  "require": {
-    "php": "~7.3.0||~7.4.0",
-    "magento/framework": "~103.0.1",
-    "tlsoft/paymentframework": "*"
-  },
   "license": "proprietary",
   "authors": [
     {

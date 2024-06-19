@@ -34,7 +34,6 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface;
 use Magento\Sales\Model\Service\InvoiceService;
@@ -42,26 +41,30 @@ use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Config\Source\ResultCodes;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
 use Magento\Sales\Model\Order\Payment\State\AuthorizeCommand;
-use \Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use UnexpectedValueException;
 
+
+/**
+ * @property Data $helper
+ * @property ManagerInterface $messageManager
+ * @property ConfigProvider $configProvider
+ * @property OrderInterface $orderRepository
+ * @property OrderManagementInterface $orderManagement
+ * @property OrderSender $orderSender
+ * @property AuthorizeCommand $authorizeCommand
+ * @property FilterGroupBuilder $filterGroup
+ * @property SearchCriteriaBuilder $searchCriteria
+ * @property FilterBuilder $filterBuilder
+ * @property InvoiceService $invoiceService
+ * @property TransactionFactory $transactionFactory
+ * @property BuilderInterface $transactionBuilder
+ * @property Session $checkoutSession
+ * @property TransactionRepositoryInterface $transactionRepository
+ * @property string $responseCode
+ */
 class Communication extends AbstractHelper
 {
-    /**
-     * @var BuilderInterface
-     */
-    protected $transactionBuilder;
-    /**
-     * @var ManagerInterface
-     */
-    protected $messageManager;
-    /**
-     * @var DataHelper
-     */
-    private $dataHelper;
-    /**
-     * @var string
-     */
-    private $responseCode;
 
     public function __construct(
         Context                        $context,
@@ -103,9 +106,9 @@ class Communication extends AbstractHelper
     /**
      * Get response code from the Gateway
      * @param array $params
-     * @return string
+     * @return Communication
      */
-    public function processResponse($params = array())
+    public function processResponse(array $params): Communication
     {
         $this->processTransaction($params);
         return $this;
@@ -115,7 +118,7 @@ class Communication extends AbstractHelper
     {
         $orderManagement = $this->orderManagement;
 
-        if (!$params && $orderComplete == false) {
+        if (!$params && !$orderComplete) {
             $orderManagement->cancel($order->getId());
 
             $status = $orderManagement->getStatus($order->getId());
@@ -133,7 +136,7 @@ class Communication extends AbstractHelper
         if (!$order)
             $order = $this->checkoutSession->getLastRealOrder();
 
-        if ($params && $orderComplete == true) {
+        if ($params && $orderComplete) {
             $increment_id = $order->getId();
             $filter = [['field' => 'order_id', 'value' => $increment_id, 'condition' => 'eq']];
             $criteria = $this->getSearchCriteria($filter);
@@ -149,6 +152,7 @@ class Communication extends AbstractHelper
                             $this->responseCode = ResultCodes::RESULT_SUCCESS;
                             return $this;
                         }
+                        $i++;
                     }
                 }
             }
@@ -164,7 +168,7 @@ class Communication extends AbstractHelper
 
         $response = $this->cURL($helper->getStateUrl() . $params);
 
-        if ($response != false) {
+        if ($response) {
 
             $payment = $order->getPayment();
 
@@ -191,7 +195,7 @@ class Communication extends AbstractHelper
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                        ->build(Transaction::TYPE_CAPTURE);
+                        ->build(TransactionInterface::TYPE_CAPTURE);
 
                     if ($transaction) {
                         $this->transactionRepository->save(
@@ -213,7 +217,7 @@ class Communication extends AbstractHelper
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                        ->build(Transaction::TYPE_ORDER);
+                        ->build(TransactionInterface::TYPE_ORDER);
 
                     if ($transaction) {
                         $this->transactionRepository->save(
@@ -234,7 +238,7 @@ class Communication extends AbstractHelper
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                        ->build(Transaction::TYPE_ORDER);
+                        ->build(TransactionInterface::TYPE_ORDER);
 
                     if ($transaction) {
                         $this->transactionRepository->save(
@@ -252,7 +256,7 @@ class Communication extends AbstractHelper
                         ->setTransactionId($transaction_id)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                        ->build(Transaction::TYPE_ORDER);
+                        ->build(TransactionInterface::TYPE_ORDER);
 
                     if ($transaction) {
                         $this->transactionRepository->save(
@@ -278,7 +282,7 @@ class Communication extends AbstractHelper
                     ->setTransactionId($transaction_id)
                     ->setFailSafe(true)
                     ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
-                    ->build(Transaction::TYPE_ORDER);
+                    ->build(TransactionInterface::TYPE_ORDER);
 
                 if ($transaction) {
                     $this->transactionRepository->save(
@@ -347,15 +351,14 @@ class Communication extends AbstractHelper
      * @param Filter $filter
      * @return FilterGroup
      */
-    private function getFilterGroup(Filter $filter)
+    private function getFilterGroup(Filter $filter): FilterGroup
     {
         $group = clone $this->filterGroup;
         $group->addFilter($filter);
-        $group = $group->create();
-        return $group;
+        return $group->create();
     }
 
-    protected function getProviderConfig(string $payment)
+    protected function getProviderConfig(string $payment): array
     {
         return $this->configProvider->getProviderConfig($payment);
     }
@@ -368,13 +371,13 @@ class Communication extends AbstractHelper
     /**
      * Summary of getConfig
      * @param string $path
+     * @param array $config
      * @return boolean|string
      */
     protected function getConfig(string $path, array $config)
     {
         if ($path) {
-            $value = $config[$path];
-            return $value;
+            return $config[$path];
         }
 
         return false;
@@ -415,7 +418,7 @@ class Communication extends AbstractHelper
         }
     }
 
-    public function processRefundStart($trid, $pid, $amount, $total, $payment)
+    public function processRefundStart($trid, $pid, $amount, $total, $payment): bool
     {
         $helper = $this->helper;
 
@@ -451,19 +454,19 @@ class Communication extends AbstractHelper
             $result = $helper->getDecodedMessage($response);
 
             if ($result['STATUS'] == 99)
-                throw new \UnexpectedValueException('An error occurred during processing.');
+                throw new UnexpectedValueException('An error occurred during processing.');
 
         } else if ($result['STATUS'] == 60) {
             $payment->setIsTransactionClosed(true);
             $payment->setShouldCloseParentTransaction(true);
-            throw new \UnexpectedValueException('The transaction has been already closed.');
+            throw new UnexpectedValueException('The transaction has been already closed.');
         } else if ($result['STATUS'] == 10) {
             return false;
         } else {
             if ($amount != $total):
-                throw new \UnexpectedValueException('Partial refund cannot completed yet. Wait for the bank closing hour.');
+                throw new UnexpectedValueException('Partial refund cannot completed yet. Wait for the bank closing hour.');
             else:
-                throw new \UnexpectedValueException('Status: ' . $result['STATUS'] . '-' . $result['RT'] . ' - ' . $result['TRID']);
+                throw new UnexpectedValueException('Status: ' . $result['STATUS'] . '-' . $result['RT'] . ' - ' . $result['TRID']);
             endif;
 
         }
@@ -476,7 +479,7 @@ class Communication extends AbstractHelper
      * Transaction response code.
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->responseCode;
     }

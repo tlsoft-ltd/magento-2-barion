@@ -21,6 +21,7 @@
 namespace TLSoft\BarionGateway\Gateway\Validator;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
+use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use TLSoft\BarionGateway\Helper\Data;
 class CurrencyValidator extends AbstractValidator
 {
@@ -31,11 +32,11 @@ class CurrencyValidator extends AbstractValidator
 
 	/**
 	 * @param Data $helper
-	 * @param \Magento\Payment\Gateway\Validator\ResultInterfaceFactory $resultFactory
+	 * @param ResultInterfaceFactory $resultFactory
 	 */
 	public function __construct(
 		Data $helper,
-		\Magento\Payment\Gateway\Validator\ResultInterfaceFactory $resultFactory
+		ResultInterfaceFactory $resultFactory
    ) {
 		$this->helper = $helper;
         parent::__construct($resultFactory);
@@ -44,9 +45,9 @@ class CurrencyValidator extends AbstractValidator
     /**
      * Validate currency
      * @param array $validationSubject 
-     * @return mixed
+     * @return ResultInterface
      */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
 		$currencyCode = $validationSubject["currency"];
         if (!in_array($currencyCode, $this->getAcceptedCurrencyCodes())) {
@@ -56,8 +57,7 @@ class CurrencyValidator extends AbstractValidator
             );
         }else{
 			return $this->createResult(
-                true,
-                []
+                true
             );
 		}
     }
@@ -66,7 +66,8 @@ class CurrencyValidator extends AbstractValidator
 	 * Return enabled currency codes for payment
 	 * @return array
 	 */
-	private function getAcceptedCurrencyCodes(){
+	private function getAcceptedCurrencyCodes(): array
+    {
 		$helper = $this->helper;
 		return $helper->getAllowedCurrencyCodes();
 	}

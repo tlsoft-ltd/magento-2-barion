@@ -21,14 +21,18 @@
 
 namespace TLSoft\BarionGateway\Gateway\Request;
 
+use InvalidArgumentException;
 use TLSoft\BarionGateway\Helper\Data;
 use TLSoft\BarionGateway\Model\Ui\ConfigProvider;
 use TLSoft\BarionGateway\Gateway\Helper\Communication;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use UnexpectedValueException;
 
+/**
+ * @property Communication $communicationHelper
+ */
 class RefundRequest implements BuilderInterface
 {
 
@@ -57,16 +61,16 @@ class RefundRequest implements BuilderInterface
 		$this->communicationHelper = $communication;
     }
 
-	/**
-	 * Summary of getConfig
-	 * @param string $path
-	 * @return boolean|string
-	 */
+    /**
+     * Summary of getConfig
+     * @param string $path
+     * @param array $config
+     * @return boolean|string
+     */
 	protected function getConfig(string $path, array $config)
 	{
 		if($path){
-			$value = $config[$path];
-			return $value;
+            return $config[$path];
 		}
 
 		return false;
@@ -88,17 +92,19 @@ class RefundRequest implements BuilderInterface
 
 
     /**
-	 * Builds CIB request
-	 *
-	 * @param array $buildSubject
-	 * @return array
-	 */
-    public function build(array $buildSubject)
+     * Builds CIB request
+     *
+     * @param array $buildSubject
+     * @return array
+     * @throws LocalizedException
+     * @throws LocalizedException
+     */
+    public function build(array $buildSubject): array
     {
         if (!isset($buildSubject['payment'])
             || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
-            throw new \InvalidArgumentException('Payment data object should be provided');
+            throw new InvalidArgumentException('Payment data object should be provided');
         }
 
 		/** @var PaymentDataObjectInterface $payment */
@@ -106,14 +112,13 @@ class RefundRequest implements BuilderInterface
 
         $payment = $subject->getPayment();
 
-		/** @var OrderAdapterInterface $order */
         $order = $subject->getOrder();
 		$this->order = $order;
 
 		$providerConfig = $this->getProviderConfig($subject);
 
         if (empty($providerConfig)) {
-            throw new \UnexpectedValueException('Payment method is disabled or connection data is missing.');
+            throw new UnexpectedValueException('Payment method is disabled or connection data is missing.');
         }
 
         $helper = $this->helper;
@@ -141,7 +146,7 @@ class RefundRequest implements BuilderInterface
 	 * @return array
 	 * @throws LocalizedException
 	 */
-    protected function getProviderConfig(PaymentDataObjectInterface $payment)
+    protected function getProviderConfig(PaymentDataObjectInterface $payment): array
     {
         $methodCode = $payment->getPayment()->getMethodInstance()->getCode();
 

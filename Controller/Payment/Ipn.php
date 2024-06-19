@@ -26,12 +26,16 @@ use Magento\Framework\Exception\LocalizedException;
 use TLSoft\BarionGateway\Gateway\Helper\Communication;
 use Magento\Framework\App\Action\Context;
 
+/**
+ * @property Communication $helper
+ */
 class Ipn extends Action
 {
 
     /**
      * Summary of __construct
      * @param Context $context
+     * @param Communication $helper
      */
     public function __construct(
         Context $context,

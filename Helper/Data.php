@@ -30,40 +30,24 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 
+/**
+ * @property Resolver $localeResolver
+ * @property TimezoneInterface $timezoneFactory
+ * @property UrlInterface $urlFactory
+ * @property DirectoryList $directoryList
+ * @property JsonHelper $jsonHelper
+ */
 class Data extends AbstractHelper
 {
 
     /**
-     * @var Resolver
-     */
-    private $localeResolver;
-
-    /**
-     * @var TimezoneInterface
-     */
-    private $timezoneFactory;
-
-    /**
-     * @var UrlInterface
-     */
-    private $urlFactory;
-
-    /**
-     * @var $directoryList
-     */
-    private $directoryList;
-
-    /**
-     * @var JsonHelper
-     */
-    private $jsonHelper;
-
-    /**
      * __construct
      * @param Context $context
-     * @param StoreRepositoryInterface $store
+     * @param Resolver $localeResolver
      * @param TimezoneInterface $timezoneFactory
      * @param UrlInterface $urlInterface
+     * @param DirectoryList $directoryList
+     * @param JsonHelper $jsonHelper
      */
     public function __construct(
         Context $context,
@@ -87,7 +71,7 @@ class Data extends AbstractHelper
      *
      * @return array
      */
-    public function getAllowedCurrencyCodes()
+    public function getAllowedCurrencyCodes(): array
     {
         return explode(",", $this->getConfig("payment/bariongateway/allowedcurrency"));
     }
@@ -100,8 +84,7 @@ class Data extends AbstractHelper
     protected function getConfig(string $path)
     {
         if ($path) {
-            $value = $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
-            return $value;
+            return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
         }
 
         return false;
@@ -112,7 +95,7 @@ class Data extends AbstractHelper
      * @param int $storeId
      * @return string
      */
-    public function getLocaleCode(int $storeId)
+    public function getLocaleCode(int $storeId): string
     {
 
         $localecode = $this->localeResolver->getLocale();
@@ -146,7 +129,7 @@ class Data extends AbstractHelper
      * Get current timecode for Barion transactions
      * @return string
      */
-    public function getTimeCode()
+    public function getTimeCode(): string
     {
         return $this->timezoneFactory->date()->format('YmdHis');
     }
@@ -157,7 +140,7 @@ class Data extends AbstractHelper
      * @param string $currency
      * @return string
      */
-    public function formatOrderTotal($total, $currency)
+    public function formatOrderTotal($total, string $currency): string
     {
 
         if ($currency == 'HUF') {
@@ -174,7 +157,7 @@ class Data extends AbstractHelper
      * @param string $path
      * @return string
      */
-    public function getUrl(string $path)
+    public function getUrl(string $path): string
     {
         return $this->urlFactory->getUrl($path);
     }
@@ -184,17 +167,17 @@ class Data extends AbstractHelper
      * @param array $message
      * @return string
      */
-    public function convertMessage(array $message)
+    public function convertMessage(array $message): string
     {
-        $text = $this->getEncodedMessage($message);
-        return $text;
+        return $this->getEncodedMessage($message);
     }
 
     /**
      * Return encoded Barion message
+     * @param array $message
      * @return string
      */
-    public function getEncodedMessage(array $message)
+    public function getEncodedMessage(array $message): string
     {
 
         return $this->jsonHelper->jsonEncode($message);
@@ -268,11 +251,9 @@ class Data extends AbstractHelper
      * @param string $message
      * @return array
      */
-    public function getDecodedMessage(string $message)
+    public function getDecodedMessage(string $message): array
     {
-        $result = $this->jsonHelper->jsonDecode($message);
-
-        return $result;
+        return $this->jsonHelper->jsonDecode($message);
 
     }
 

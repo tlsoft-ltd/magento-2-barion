@@ -24,22 +24,25 @@ namespace TLSoft\BarionGateway\Controller\Payment;
 use Magento\Framework\App\Action\Action;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use TLSoft\BarionGateway\Model\Config\Source\ResultCodes;
 use TLSoft\BarionGateway\Gateway\Helper\Communication;
 use Magento\Framework\App\Action\Context;
 
+/**
+ * @property Session $session
+ * @property Communication $helper
+ * @property ManagerInterface $_messageManager
+ */
 class Response extends Action
 {
-	/**
-	 * @var Session
-	 */
-	private $session;
 
-	/**
-	 * Summary of __construct
-	 * @param Context $context
-	 * @param Session $customerSession
-	 */
+    /**
+     * Summary of __construct
+     * @param Context $context
+     * @param Communication $helper
+     * @param Session $session
+     */
 	public function __construct(
 	Context $context,
 	Communication $helper,
