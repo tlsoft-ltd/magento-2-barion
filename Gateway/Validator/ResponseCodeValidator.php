@@ -103,7 +103,7 @@ class ResponseCodeValidator extends AbstractValidator
             }
         } else {
             foreach ($result["Errors"] as $error) {
-                $this->errors = $error["Title"]."|".$error["Description"];
+                $this->errors[] = $error["Title"]."|".$error["Description"];
             }
 
             return false;
