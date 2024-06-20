@@ -78,17 +78,11 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
         $client = $this->clientFactory->create();
 
-
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($transferObject->getBody(),true));
         switch ($transferObject->getMethod()) {
             case Request::METHOD_POST:
                 try {
                     $client->setHeaders(["Content-Type: application/json","Content-Length: ".strlen($transferObject->getBody())]);
                     $client->post($transferObject->getUri(),$transferObject->getBody());
-
-                    $logger->debug(var_export($client->getBody(),true));
 
                     $result = $this->converter
                         ? $this->converter->convert($client->getBody())

@@ -100,6 +100,8 @@ class ResponseCodeValidator extends AbstractValidator
             if($result[self::STATUS]=="Prepared"){
                 return true;
             }
+        }else{
+            $this->errors = $result["Errors"];
         }
 
         return false;
