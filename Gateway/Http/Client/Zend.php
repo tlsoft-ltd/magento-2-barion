@@ -23,7 +23,7 @@ namespace TLSoft\BarionGateway\Gateway\Http\Client;
 
 use LogicException;
 use Laminas\Http\Exception\RuntimeException;
-use Magento\Framework\HTTP\LaminasClientFactory;
+use Magento\Framework\HTTP\Client\CurlFactory;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
@@ -44,18 +44,18 @@ use Laminas\Http\Request;
 class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientInterface
 {
 
-    private ZendClientFactory|LaminasClientFactory $clientFactory;
+    private CurlFactory $clientFactory;
 
     private ConverterInterface|null $converter;
 
     private Logger $logger;
     /**
-     * @param LaminasClientFactory $clientFactory
+     * @param CurlFactory $clientFactory
      * @param Logger $logger
      * @param ConverterInterface | null $converter
      */
     public function __construct(
-        LaminasClientFactory  $clientFactory,
+        CurlFactory  $clientFactory,
         Logger             $logger,
         ConverterInterface $converter = null
     )
@@ -78,19 +78,30 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
         $client = $this->clientFactory->create();
 
-        $client->setOptions($transferObject->getClientConfig());
-        $client->setMethod($transferObject->getMethod());
+        $client->setHeaders(["Content-Type: application/json"]);
 
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->get('Psr\Log\LoggerInterface');
         $logger->debug(var_export($transferObject->getBody(),true));
         switch ($transferObject->getMethod()) {
-            case Request::METHOD_GET:
-                $client->setParameterGet($transferObject->getBody());
-                break;
             case Request::METHOD_POST:
-                $client->setParameterPost($transferObject->getBody(), "application/json");
+                try {
+                    $response = $client->post($transferObject->getUri(),$transferObject->getBody());
+
+                    $result = $this->converter
+                        ? $this->converter->convert($response->getBody())
+                        : [$response->getBody()];
+                    $log['response'] = $result;
+                } catch (RuntimeException $e) {
+                    throw new ClientException(
+                        __($e->getMessage())
+                    );
+                } catch (ConverterException $e) {
+                    throw $e;
+                } finally {
+                    $this->logger->debug($log);
+                }
                 break;
             default:
                 throw new LogicException(
@@ -99,27 +110,6 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
                         $transferObject->getMethod()
                     )
                 );
-        }
-
-        $client->setHeaders($transferObject->getHeaders());
-        $client->setUrlEncodeBody($transferObject->shouldEncode());
-        $client->setUri($transferObject->getUri());
-
-        try {
-            $response = $client->send();
-
-            $result = $this->converter
-                ? $this->converter->convert($response->getBody())
-                : [$response->getBody()];
-            $log['response'] = $result;
-        } catch (RuntimeException $e) {
-            throw new ClientException(
-                __($e->getMessage())
-            );
-        } catch (ConverterException $e) {
-            throw $e;
-        } finally {
-            $this->logger->debug($log);
         }
 
         return $result;
