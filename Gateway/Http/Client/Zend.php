@@ -78,8 +78,6 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
         $client = $this->clientFactory->create();
 
-        $client->setHeaders(["Content-Type: application/json"]);
-
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $logger = $objectManager->get('Psr\Log\LoggerInterface');
@@ -87,11 +85,12 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
         switch ($transferObject->getMethod()) {
             case Request::METHOD_POST:
                 try {
-                    $response = $client->post($transferObject->getUri(),$transferObject->getBody());
+                    $client->setHeaders(["Content-Type: application/json","Content-Length: ".strlen($transferObject->getBody())]);
+                    $client->post($transferObject->getUri(),$transferObject->getBody());
 
                     $result = $this->converter
-                        ? $this->converter->convert($response->getBody())
-                        : [$response->getBody()];
+                        ? $this->converter->convert($client->getBody())
+                        : [$client->getBody()];
                     $log['response'] = $result;
                 } catch (RuntimeException $e) {
                     throw new ClientException(
