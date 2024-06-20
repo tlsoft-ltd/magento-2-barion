@@ -32,41 +32,42 @@ class ResponseCodeValidator extends AbstractValidator
      */
     const STATUS = "Status";
 
-	/**
-	 * @var Data
-	 */
+    /**
+     * @var Data
+     */
     private $helper;
 
     /**
      * @var $errors
      */
-    private $errors=[];
+    private $errors = [];
 
     /**
      * @var $codes
      */
-    private $codes=[];
+    private $codes = [];
 
     /**
      * Summary of __construct
      * @param Data $helper
      * @param ResultInterfaceFactory $resultFactory
      */
-	public function __construct(
-		Data $helper,
-		ResultInterfaceFactory $resultFactory
-		){
-		$this->helper = $helper;
+    public function __construct(
+        Data                   $helper,
+        ResultInterfaceFactory $resultFactory
+    )
+    {
+        $this->helper = $helper;
 
-		parent::__construct($resultFactory);
-	}
+        parent::__construct($resultFactory);
+    }
 
     /**
-	 * Performs validation of result code
-	 *
-	 * @param array $validationSubject
-	 * @return ResultInterface
-	 */
+     * Performs validation of result code
+     *
+     * @param array $validationSubject
+     * @return ResultInterface
+     */
     public function validate(array $validationSubject): ResultInterface
     {
         if (!isset($validationSubject['response']) || !is_array($validationSubject['response'])) {
@@ -80,30 +81,32 @@ class ResponseCodeValidator extends AbstractValidator
         } else {
             return $this->createResult(
                 false,
-                array_merge([__('Gateway rejected the transaction.')],$this->errors),
+                array_merge([__('Gateway rejected the transaction.')], $this->errors),
                 $this->codes
             );
         }
     }
 
     /**
-	 * @param array $response
-	 * @return bool
-	 */
+     * @param array $response
+     * @return bool
+     */
     private function isSuccessfulTransaction(array $response): bool
     {
-		$helper = $this->helper;
+        $helper = $this->helper;
 
-		$result = $helper->getDecodedMessage($response[0]);
+        $result = $helper->getDecodedMessage($response[0]);
 
-		if(array_key_exists(self::STATUS,$result)){
-            if($result[self::STATUS]=="Prepared"){
+        if (array_key_exists(self::STATUS, $result)) {
+            if ($result[self::STATUS] == "Prepared") {
                 return true;
             }
-        }else{
-            $this->errors = $result["Errors"];
-        }
+        } else {
+            foreach ($result["Errors"] as $error) {
+                $this->errors = $error["Title"]."|".$error["Description"];
+            }
 
-        return false;
+            return false;
+        }
     }
 }
