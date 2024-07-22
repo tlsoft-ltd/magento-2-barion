@@ -145,10 +145,6 @@ class InitializeRequest implements BuilderInterface
         $message["PayerAccountInformation"] = ["SuspiciousActivityIndicator" => "NoSuspiciousActivityObserved"];
         $message["ChallengePreference"] = "NoPreference";
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($message,true));
-
         return $message;
     }
 
