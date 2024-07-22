@@ -61,15 +61,11 @@ class TransferFactory implements TransferFactoryInterface
 
 		$url = $helper->getMarketUrl();
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($url,true));
-
         return $this->transferBuilder
             ->setMethod("POST")
             ->setUri($url)
             ->setBody($json)
-            ->shouldEncode(true)
+            ->shouldEncode(false)
             ->build();
     }
 }
