@@ -65,7 +65,7 @@ class TransferFactory implements TransferFactoryInterface
             ->setMethod("POST")
             ->setUri($url)
             ->setBody($json)
-            ->shouldEncode(false)
+            ->shouldEncode(true)
             ->build();
     }
 }
