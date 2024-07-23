@@ -85,7 +85,6 @@ class ResponseCodeValidator extends AbstractValidator
      */
     private function isSuccessfulTransaction(array $response): bool
     {
-        $response = $response[0];
 
         if (array_key_exists(self::STATUS, $response)) {
             if ($response[self::STATUS] == "Prepared") {
