@@ -95,6 +95,10 @@ class ResponseCodeValidator extends AbstractValidator
     {
         $helper = $this->helper;
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($response,true));
+
         $result = $helper->getDecodedMessage($response[0]);
 
         if (array_key_exists(self::STATUS, $result)) {
