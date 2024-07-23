@@ -26,7 +26,6 @@ use Laminas\Http\Exception\RuntimeException;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
-use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
 use Laminas\Http\Request;
@@ -54,11 +53,9 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
      */
     public function __construct(
         Logger             $logger,
-        ConverterInterface $converter = null,
         Communication $communication
     )
     {
-        $this->converter = $converter;
         $this->logger = $logger;
         $this->communication = $communication;
     }
