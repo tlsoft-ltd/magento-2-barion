@@ -45,6 +45,8 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
 
     private ConverterInterface|null $converter;
 
+    private $communication;
+
     private Logger $logger;
     /**
      * @param CurlFactory $clientFactory
