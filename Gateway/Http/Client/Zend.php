@@ -30,6 +30,7 @@ use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
 use Laminas\Http\Request;
+use TLSoft\BarionGateway\Gateway\Helper\Communication;
 
 /**
  * Class Zend
@@ -53,11 +54,13 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
      */
     public function __construct(
         Logger             $logger,
-        ConverterInterface $converter = null
+        ConverterInterface $converter = null,
+        Communication $communication
     )
     {
         $this->converter = $converter;
         $this->logger = $logger;
+        $this->communication = $communication;
     }
 
     /**
@@ -75,18 +78,8 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
             case Request::METHOD_POST:
                 try {
 
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $transferObject->getUri());
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($transferObject->getBody())));
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($transferObject->getBody()));
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $response  = curl_exec($ch);
-                    curl_close($ch);
+                    $result = $this->communication->cURLPost($transferObject->getUri(),$transferObject->getBody());
 
-                    $result = $this->converter
-                        ? $this->converter->convert($response)
-                        : [$response];
                     $log['response'] = $result;
                 } catch (RuntimeException $e) {
                     throw new ClientException(

@@ -435,6 +435,44 @@ class Communication extends AbstractHelper
         }
     }
 
+    public function cURLPost($url,$data)
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        if ($userAgent == "") {
+            $cver = curl_version();
+            $userAgent = "curl/" . $cver["version"] . " " .$cver["ssl_version"];
+        }
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,     // return web page
+            CURLOPT_HEADER => 0,    // don't return headers
+            CURLOPT_FOLLOWLOCATION => 0,     // follow redirects
+            CURLOPT_ENCODING => "",       // handle all encodings
+            CURLOPT_USERAGENT => $userAgent, // who am i
+            CURLOPT_AUTOREFERER => true,     // set referer on redirect
+            CURLOPT_CONNECTTIMEOUT => 30,      // timeout on connect
+            CURLOPT_TIMEOUT => 30,      // timeout on response
+            CURLOPT_MAXREDIRS => 5,       // stop after 10 redirects
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLINFO_HEADER_OUT => 1,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_HTTPHEADER => strlen($data),
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => $data
+        );
+        $ch = curl_init($url);
+        curl_setopt_array($ch, $options);
+        $retValue = curl_exec($ch);
+        $error = curl_error($ch);
+        if ($retValue === FALSE) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return false;
+        } else {
+            curl_close($ch);
+            return $this->helper->getDecodedMessage($retValue);
+        }
+    }
+
     public function processRefundStart($trid, $pid, $amount, $total, $payment): bool
     {
         $helper = $this->helper;
