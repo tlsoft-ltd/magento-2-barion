@@ -77,15 +77,13 @@ class ResponseHandler implements HandlerInterface
 
         $helper = $this->helper;
 
-        $result = $helper->getDecodedMessage($response[0]);
-
-        $url = $helper->getCustomerUrl()."?id=".$result["PaymentId"];
+        $url = $helper->getCustomerUrl()."?id=".$response["PaymentId"];
 
         $customerSession = $this->customerSession;
         $customerSession->setRedirectUrl($url);
-        $customerSession->setTransactionId($result[self::TXN_ID]);
+        $customerSession->setTransactionId($response[self::TXN_ID]);
 
-        $payment->setTransactionId($result[self::TXN_ID]);
+        $payment->setTransactionId($response[self::TXN_ID]);
         $payment->setIsTransactionClosed(false);
 
         $order = $payment->getOrder();
