@@ -455,7 +455,7 @@ class Communication extends AbstractHelper
             CURLOPT_SSL_VERIFYPEER => false,
             CURLINFO_HEADER_OUT => 1,
             CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTPHEADER => strlen($data),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json','Content-Length: '.strlen($data)],
             CURLOPT_POST => 1,
             CURLOPT_POSTFIELDS => $data
         );
