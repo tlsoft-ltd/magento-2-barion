@@ -23,7 +23,6 @@ use InvalidArgumentException;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
-use TLSoft\BarionGateway\Helper\Data;
 class ResponseCodeValidator extends AbstractValidator
 {
 
@@ -31,11 +30,6 @@ class ResponseCodeValidator extends AbstractValidator
      * Status;
      */
     const STATUS = "Status";
-
-    /**
-     * @var Data
-     */
-    private $helper;
 
     /**
      * @var $errors
@@ -53,11 +47,9 @@ class ResponseCodeValidator extends AbstractValidator
      * @param ResultInterfaceFactory $resultFactory
      */
     public function __construct(
-        Data                   $helper,
         ResultInterfaceFactory $resultFactory
     )
     {
-        $this->helper = $helper;
 
         parent::__construct($resultFactory);
     }
@@ -93,20 +85,14 @@ class ResponseCodeValidator extends AbstractValidator
      */
     private function isSuccessfulTransaction(array $response): bool
     {
-        $helper = $this->helper;
+        $response = $response[0];
 
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $logger = $objectManager->get('Psr\Log\LoggerInterface');
-        $logger->debug(var_export($response,true));
-
-        $result = $helper->getDecodedMessage($response);
-
-        if (array_key_exists(self::STATUS, $result)) {
-            if ($result[self::STATUS] == "Prepared") {
+        if (array_key_exists(self::STATUS, $response)) {
+            if ($response[self::STATUS] == "Prepared") {
                 return true;
             }
         } else {
-            foreach ($result["Errors"] as $error) {
+            foreach ($response["Errors"] as $error) {
                 $this->errors[] = $error["Title"]."|".$error["Description"];
             }
 
