@@ -366,9 +366,8 @@ class Communication extends AbstractHelper
     /**
      * Get Filter grouo for the search criteria builder
      * @param Filter $filter
-     * @return FilterGroup
      */
-    private function getFilterGroup(Filter $filter): FilterGroup
+    private function getFilterGroup(Filter $filter)
     {
         $group = clone $this->filterGroup;
         $group->addFilter($filter);
