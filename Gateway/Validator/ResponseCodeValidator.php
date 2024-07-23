@@ -99,7 +99,7 @@ class ResponseCodeValidator extends AbstractValidator
         $logger = $objectManager->get('Psr\Log\LoggerInterface');
         $logger->debug(var_export($response,true));
 
-        $result = $helper->getDecodedMessage($response[0]);
+        $result = $helper->getDecodedMessage($response);
 
         if (array_key_exists(self::STATUS, $result)) {
             if ($result[self::STATUS] == "Prepared") {
