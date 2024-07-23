@@ -154,9 +154,9 @@ class Process
     /**
      * Get Filter grouo for the search criteria builder
      * @param Filter $filter
-     * @return FilterGroup
+     * @return
      */
-    private function getFilterGroup(Filter $filter): FilterGroup
+    private function getFilterGroup(Filter $filter)
     {
         $group = clone $this->filterGroup;
         $group->addFilter($filter);
