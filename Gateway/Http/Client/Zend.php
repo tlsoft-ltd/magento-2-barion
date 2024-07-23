@@ -23,14 +23,12 @@ namespace TLSoft\BarionGateway\Gateway\Http\Client;
 
 use LogicException;
 use Laminas\Http\Exception\RuntimeException;
-use Magento\Framework\HTTP\Client\CurlFactory;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
-use Laminas\Http\Request;
 
 /**
  * Class Zend
@@ -44,8 +42,6 @@ use Laminas\Http\Request;
 class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientInterface
 {
 
-    private CurlFactory $clientFactory;
-
     private ConverterInterface|null $converter;
 
     private Logger $logger;
@@ -55,12 +51,10 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
      * @param ConverterInterface | null $converter
      */
     public function __construct(
-        CurlFactory  $clientFactory,
         Logger             $logger,
         ConverterInterface $converter = null
     )
     {
-        $this->clientFactory = $clientFactory;
         $this->converter = $converter;
         $this->logger = $logger;
     }
@@ -76,18 +70,22 @@ class Zend extends \Magento\Payment\Gateway\Http\Client\Zend implements ClientIn
         ];
         $result = [];
 
-        $client = $this->clientFactory->create();
-
         switch ($transferObject->getMethod()) {
             case Request::METHOD_POST:
                 try {
-                    $client->setHeaders(["Content-Type: application/json","Content-Length: ".strlen($transferObject->getBody())]);
 
-                    $client->post($transferObject->getUri(),json_encode($transferObject->getBody()));
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $transferObject->getUri());
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($transferObject->getBody())));
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($transferObject->getBody()));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $response  = curl_exec($ch);
+                    curl_close($ch);
 
                     $result = $this->converter
-                        ? $this->converter->convert($client->getBody())
-                        : [$client->getBody()];
+                        ? $this->converter->convert($response)
+                        : [$response];
                     $log['response'] = $result;
                 } catch (RuntimeException $e) {
                     throw new ClientException(
