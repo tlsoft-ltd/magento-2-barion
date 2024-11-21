@@ -31,6 +31,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\DB\TransactionFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderRepositoryInterface;
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
@@ -79,7 +80,7 @@ class Communication extends AbstractHelper
     private InvoiceService $invoiceService;
     private OrderManagementInterface $orderManagement;
     private ConfigProvider $configProvider;
-    private OrderInterface $orderRepository;
+    private OrderRepositoryInterface $orderRepository;
     private ManagerInterface $messageManager;
     private Data $helper;
 
@@ -87,7 +88,7 @@ class Communication extends AbstractHelper
         Context                        $context,
         Data                           $helper,
         ManagerInterface               $messageManager,
-        OrderInterface                 $orderRepository,
+        OrderInterface                 $order,
         ConfigProvider                 $configProvider,
         OrderManagementInterface       $orderManagement,
         InvoiceService                 $invoiceService,
@@ -99,6 +100,7 @@ class Communication extends AbstractHelper
         SearchCriteriaBuilder          $searchCriteriaBuilder,
         Session                        $checkoutSession,
         AuthorizeCommand $authorizeCommand,
+        OrderRepositoryInterface $orderRepository,
         OrderSender $orderSender
     )
     {
@@ -160,9 +162,7 @@ class Communication extends AbstractHelper
                 $result = $transactionRepository->getList($criteria);
                 $transaction = $result->getFirstItem();
                 $orderId = $transaction->getOrderId();
-                print_r($orderId);
                 $order = $this->orderRepository->get($orderId);
-                print_r($order);
             }
         }
 
