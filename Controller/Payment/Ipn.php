@@ -48,7 +48,7 @@ class Ipn extends Action
 
     public function execute(): void
     {
-        $urlParams = [$this->getRequest()->getPostValue()];
+        $urlParams = [$this->getRequest()->getParams()];
 
         $this->helper->processResponse($urlParams);
 
