@@ -215,6 +215,7 @@ class Communication extends AbstractHelper
 
             if (count($result["Errors"])<1) {
                 unset($result["Errors"]);
+                print_r($result);
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
@@ -301,7 +302,7 @@ class Communication extends AbstractHelper
                     $orderManagement->cancel($order->getId());
 
                     $status = $orderManagement->getStatus($order->getId());
-                    $order->addCommentToStatusHistory(__('Closed by CIB module.'), $status);
+                    $order->addCommentToStatusHistory(__('Closed by Barion module.'), $status);
 
                     $this->messageManager->addErrorMessage($resulttext);
                 }
