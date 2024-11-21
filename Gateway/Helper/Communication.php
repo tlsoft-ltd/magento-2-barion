@@ -148,6 +148,8 @@ class Communication extends AbstractHelper
         $helper = $this->helper;
         $methodCode = "bariongateway";
 
+        print_r($params);
+
         $transaction_id = $params["paymentId"];
 
         if (!$order)
