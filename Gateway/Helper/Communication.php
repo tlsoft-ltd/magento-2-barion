@@ -151,8 +151,6 @@ class Communication extends AbstractHelper
         if(array_key_exists("paymentId",$params)){
             $transactionId = $params["paymentId"];
         }else if(array_key_exists("paymentId",$params[0])){
-            print_r("itt");
-            $transactionId = $params[0]["paymentId"];
             $filter = [['field' => 'txn_id', 'value' => $transactionId, 'condition' => 'eq']];
             $criteria = $this->getSearchCriteria($filter);
 
@@ -162,7 +160,7 @@ class Communication extends AbstractHelper
                 $transaction = $result->getFirstItem();
                 $orderId = $transaction->getOrderId();
                 $order = $this->orderRepository->get($orderId);
-                print_r($order->getIncrementId());
+                print_r($order);
             }
         }
 
