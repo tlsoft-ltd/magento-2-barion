@@ -148,11 +148,6 @@ class Communication extends AbstractHelper
         $helper = $this->helper;
         $methodCode = "bariongateway";
 
-        if(!array_key_exists("paymentId",$params[0]))
-            return;
-
-        $transactionId = $params[0]["paymentId"];
-
         if(array_key_exists("paymentId",$params)){
             $transactionId = $params["paymentId"];
         }else if(array_key_exists("paymentId",$params[0])){
