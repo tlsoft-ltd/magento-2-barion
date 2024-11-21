@@ -162,6 +162,7 @@ class Communication extends AbstractHelper
                 $transaction = $result->getFirstItem();
                 $orderId = $transaction->getOrderId();
                 $order = $this->orderRepository->get($orderId);
+                print_r($order->getIncrementId());
             }
         }
 
