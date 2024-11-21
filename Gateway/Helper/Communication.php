@@ -240,6 +240,7 @@ class Communication extends AbstractHelper
                     $this->orderSender->send($order);
 
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
+                    print_r("itt");
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
                     $this->messageManager->addErrorMessage($resulttext);
 
