@@ -215,7 +215,6 @@ class Communication extends AbstractHelper
 
             if (count($result["Errors"])<1) {
                 unset($result["Errors"]);
-                print_r($result);
                 if ($result['Status'] == "Succeeded") {
                     $resulttext .= __('Authorization number') . ": " . $result['PaymentId'];
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
@@ -240,7 +239,6 @@ class Communication extends AbstractHelper
                     $this->orderSender->send($order);
 
                 } elseif ($result['Status'] == "Canceled") {//returned by user - cancel transaction
-                    print_r("itt");
                     $this->responseCode = ResultCodes::RESULT_USER_CANCEL;
                     $this->messageManager->addErrorMessage($resulttext);
 
