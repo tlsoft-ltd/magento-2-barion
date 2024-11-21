@@ -151,6 +151,7 @@ class Communication extends AbstractHelper
         if(array_key_exists("paymentId",$params)){
             $transactionId = $params["paymentId"];
         }else if(array_key_exists("paymentId",$params[0])){
+            $transactionId = $params[0]["paymentId"];
             $filter = [['field' => 'txn_id', 'value' => $transactionId, 'condition' => 'eq']];
             $criteria = $this->getSearchCriteria($filter);
 
