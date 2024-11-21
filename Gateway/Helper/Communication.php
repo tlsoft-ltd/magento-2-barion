@@ -153,6 +153,22 @@ class Communication extends AbstractHelper
 
         $transactionId = $params[0]["paymentId"];
 
+        if(array_key_exists("paymentId",$params)){
+            $transactionId = $params["paymentId"];
+        }else if(array_key_exists("paymentId",$params[0])){
+            $transactionId = $params[0]["paymentId"];
+            $filter = [['field' => 'txn_id', 'value' => $transactionId, 'condition' => 'eq']];
+            $criteria = $this->getSearchCriteria($filter);
+
+            if (is_object($criteria)) {
+                $transactionRepository = $this->transactionRepository;
+                $result = $transactionRepository->getList($criteria);
+                $transaction = $result->getFirstItem();
+                $orderId = $transaction->getOrderId();
+                $order = $this->orderRepository->get($orderId);
+            }
+        }
+
         if (!$order)
             $order = $this->checkoutSession->getLastRealOrder();
 
