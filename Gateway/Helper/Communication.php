@@ -149,9 +149,9 @@ class Communication extends AbstractHelper
         $methodCode = "bariongateway";
 
         if(!array_key_exists("paymentId",$params[0]))
-            return
+            return;
 
-        $transaction_id = $params[0]["paymentId"];
+        $transactionId = $params[0]["paymentId"];
 
         if (!$order)
             $order = $this->checkoutSession->getLastRealOrder();
@@ -180,11 +180,11 @@ class Communication extends AbstractHelper
 
         $config = $this->getProviderConfig($methodCode);
 
-        $params = "?POSKey=" . $this->getPosKey($config) . "&PaymentId=" . $transaction_id;
+        $params = "?POSKey=" . $this->getPosKey($config) . "&PaymentId=" . $transactionId;
 
         $this->responseCode = ResultCodes::RESULT_PENDING;
 
-        $resulttext = __('Transaction ID') . ": " . $transaction_id . "\n";
+        $resulttext = __('Transaction ID') . ": " . $transactionId . "\n";
 
         $response = $this->cURL($helper->getStateUrl() . $params);
 
@@ -207,12 +207,12 @@ class Communication extends AbstractHelper
                     $this->responseCode = ResultCodes::RESULT_SUCCESS;
                     $this->messageManager->addSuccessMessage($resulttext);
                     $payment->setIsTransactionApproved(true);
-                    $payment->setLastTransId($transaction_id);
+                    $payment->setLastTransId($transactionId);
                     $payment->setAdditionalInformation([Transaction::RAW_DETAILS => $result]);
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
-                        ->setTransactionId($transaction_id)
+                        ->setTransactionId($transactionId)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(TransactionInterface::TYPE_CAPTURE);
@@ -234,7 +234,7 @@ class Communication extends AbstractHelper
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
-                        ->setTransactionId($transaction_id)
+                        ->setTransactionId($transactionId)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(TransactionInterface::TYPE_ORDER);
@@ -255,7 +255,7 @@ class Communication extends AbstractHelper
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
-                        ->setTransactionId($transaction_id)
+                        ->setTransactionId($transactionId)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(TransactionInterface::TYPE_ORDER);
@@ -273,7 +273,7 @@ class Communication extends AbstractHelper
 
                     $transaction = $this->transactionBuilder->setPayment($payment)
                         ->setOrder($order)
-                        ->setTransactionId($transaction_id)
+                        ->setTransactionId($transactionId)
                         ->setFailSafe(true)
                         ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                         ->build(TransactionInterface::TYPE_ORDER);
@@ -299,7 +299,7 @@ class Communication extends AbstractHelper
 
                 $transaction = $this->transactionBuilder->setPayment($payment)
                     ->setOrder($order)
-                    ->setTransactionId($transaction_id)
+                    ->setTransactionId($transactionId)
                     ->setFailSafe(true)
                     ->setAdditionalInformation([Transaction::RAW_DETAILS => $result])
                     ->build(TransactionInterface::TYPE_ORDER);
