@@ -79,6 +79,7 @@ final class ConfigProvider implements ConfigProviderInterface
     protected function getProviders(array $scopeConfig): array
     {
         $prefix = self::CODE;
+        throw new UnexpectedValueException(var_export($scopeConfig,true));
 
         $params = array_filter(
             $scopeConfig,
