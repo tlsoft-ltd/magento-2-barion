@@ -22,6 +22,7 @@
 namespace TLSoft\BarionGateway\Model\Ui;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use UnexpectedValueException;
 /**
  * Class ConfigProvider
  * @property ScopeConfigInterface $scopeConfig
