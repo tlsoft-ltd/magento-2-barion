@@ -73,6 +73,10 @@ class InitializeRequest implements BuilderInterface
 
         $providerConfig = $this->getProviderConfig($payment);
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $logger = $objectManager->get('Psr\Log\LoggerInterface');
+        $logger->debug(var_export($providerConfig,true));
+
         if (empty($providerConfig)) {
             throw new UnexpectedValueException('Payment method is disabled or connection data is missing.');
         }
